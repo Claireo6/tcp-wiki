@@ -15,6 +15,11 @@
 | Fast recovery 視窗膨脹量 | 3*SMSS [RFC 5681 §3.2] | [RFC 5681 §3.2] | 進入 fast recovery 時 `cwnd = ssthresh + 3*SMSS` |
 | Limited Transmit 上限 | FlightSize 不超過 cwnd + 2*SMSS [RFC 5681 §3.2] | [RFC 5681 §3.2] | 第 1、2 個 duplicate ACK 時可送新資料的條件 |
 | Delayed ACK 最長延遲 | 500 [RFC 5681 §4.2] ms | [RFC 5681 §4.2] | 至少每 2 [RFC 5681 §4.2] 個完整區段回一個 ACK |
+| IW10 上限（Experimental） | 10 [RFC 6928 §1] 個區段，最多 14600 [RFC 6928 §1] 位元組 | [RFC 6928 §1] | 公式 min(10*MSS, max(2*MSS, 14600)) [RFC 6928 §2]；選用，非正式標準 |
+| IW10 回退門檻 | 4 [RFC 6928 §2] KB | [RFC 6928 §2] | 初始或重啟視窗期間偵測到遺失且已送出超過此量時，restart window 退回 RFC 3390 設定 |
+| IW 3 → 10 可省下的 RTT | 最多 4 [RFC 6928 §5.1] 個 | [RFC 6928 §5.1] | 適用於超過 4 [RFC 6928 §5.1] KB 的資料 |
+| IW10 延遲改善（Google 實驗） | 11.7% [RFC 6928 §10.1]（AvgDC）、8.7% [RFC 6928 §10.1]（SlowDC） | [RFC 6928 §10.1] | 平均網頁搜尋延遲 |
+| IW10 重傳率增加（Google 實驗） | 0.3% [RFC 6928 §10.2]（AvgDC）、0.7% [RFC 6928 §10.2]（SlowDC） | [RFC 6928 §10.2] | 代價：重傳率小幅上升 |
 | NewReno ACK 啟發式門檻 | 4*SMSS [RFC 6582 §4.1] | [RFC 6582 §4.1] | 逾時後收到的 duplicate ACK 未超過 `recover` 時，若 `cwnd` 大於 SMSS 且累積確認前進量不超過此值，視為真的遺失而進入 fast retransmit |
 | 預設 `RMSS` | 536 [RFC 5681 §2] 位元組 | [RFC 5681 §2] | 未使用 MSS 選項時的接收端最大區段大小 |
 | `cwnd` 初始值 / 重啟值 | 1 [Jacobson 1988, §1, p.4] 個封包 | [Jacobson 1988, §1, p.4] | 連線起始或逾時後重啟時 `cwnd` 之設定值 |
@@ -23,6 +28,11 @@
 | RTO 偏差乘數 | 4 [Jacobson 1988, §A, p.20] | [Jacobson 1988, §A, p.20] | 重傳計時器計算公式 $RTO = a + 4v$ 中的偏差（mean deviation）乘數 |
 
 ## 參考來源
+- [RFC 6928 §1]
+- [RFC 6928 §2]
+- [RFC 6928 §5.1]
+- [RFC 6928 §10.1]
+- [RFC 6928 §10.2]
 - [RFC 6582 §4.1]
 - [RFC 5681 §3.1]
 - [RFC 5681 §3.2]

@@ -13,6 +13,7 @@
 - [Congestion Avoidance and Control (Jacobson 1988)](sources/jacobson1988.md) - 奠定現代 TCP 壅塞控制基礎，提出慢啟動、AIMD 壅塞避免與 RTT 變異估算等 7 大演算法。
 - [TCP Congestion Control (RFC 5681)](sources/rfc5681.md) - 2009 年 Standards Track，正式定義 slow start、congestion avoidance、fast retransmit、fast recovery。
 - [The NewReno Modification to TCP's Fast Recovery Algorithm (RFC 6582)](sources/rfc6582.md) - 2012 年 Standards Track，以 partial ACK 處理同一視窗多個遺失。
+- [Increasing TCP's Initial Window (RFC 6928)](sources/rfc6928.md) - 2013 年 Experimental，提議把初始視窗上限提高到 10 個區段。
 
 ## 核心機制（Concepts）
 - [接收視窗與壅塞視窗](concepts/rwnd-vs-cwnd.md) - rwnd 保護接收端、cwnd 保護網路，實際傳送量取兩者較小值。

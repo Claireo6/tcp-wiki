@@ -63,6 +63,18 @@ slow start 期間，每個確認新資料的 ACK 最多讓 `cwnd` 增加 `SMSS` 
 
 與 Jacobson 1988 的初始值差異（1 個封包 vs. 2～4 個區段）記錄於 [歧異與衝突對照表](../conflicts.md)。
 
+## IW10：實驗性提案（RFC 6928，2013）
+
+**注意：這是 Experimental 文件，不是正式標準。**RFC 6928 提議把初始視窗上限從 RFC 5681 的 2～4 個區段提高到 10 個區段，最多 14600 位元組，且使用與否為選用 [RFC 6928 §1] [RFC 6928 §2]。
+
+> This document proposes to raise the upper bound on TCP's initial window (IW) to 10 segments (maximum 14600 B). [RFC 6928 §1]
+
+- **為什麼要提高**：網頁物件變大 [RFC 6928 §5.2]，而網際網路上很大比例的流量是短的網頁交易，在離開 slow start 前就結束 [RFC 6928 §4]；IW 從 3 提高到 10，對超過 4 KB 的資料最多可省 4 個 RTT [RFC 6928 §5.1]。
+- **哪些不變**：逾時後的 loss window 仍是 1 個區段 [RFC 6928 §2]。
+- **部署限制**：沒有監控能力的系統不得預設開啟 [RFC 6928 §12]。
+
+與 RFC 5681 的差異（IW 上限、SYN 遺失後是否重設 IW）記錄於 [歧異與衝突對照表](../conflicts.md)。
+
 ## 參考來源
 - [Jacobson 1988, §Intro, p.2]
 - [Jacobson 1988, §1, p.3]
@@ -71,3 +83,9 @@ slow start 期間，每個確認新資料的 ACK 最多讓 `cwnd` 增加 `SMSS` 
 - [Jacobson 1988, §C, p.22]
 - [RFC 5681 §3.1]
 - [RFC 5681 §4.1]
+- [RFC 6928 §1]
+- [RFC 6928 §2]
+- [RFC 6928 §4]
+- [RFC 6928 §5.1]
+- [RFC 6928 §12]
+- [RFC 6928 §5.2]

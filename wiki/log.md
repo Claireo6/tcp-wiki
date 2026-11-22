@@ -4,6 +4,21 @@
 
 ---
 
+## 2026-11-22 - 文獻 4/6 rfc6928（接手者：Claude）
+
+- **步驟 0 來源驗證**：標題 "Increasing TCP's Initial Window"、作者 Chu / Dukkipati / Cheng / Mathis（Google）、April 2013、**Category: Experimental**、無 Obsoletes / Updates、共 24 頁，與原文相符。全文搜尋 Tahoe：0 次。
+- **關係判定**：§1 自稱對 RFC 3390 與 RFC 5681 做了 "minor revision"，但標頭沒有 Updates 欄位。依 AGENTS.md「以標頭為準」，與 RFC 5681 的差異列入 conflicts，不列為演進。這也解釋了訪談階段 AI 誤判「RFC 6928 取代 RFC 5681」的原因：正文的說法與標頭的正式關係不一致。
+- **lint 調整**：RFC 6928 原文的 §5.1 標題排版不一致（「5.1 Reducing Latency」少了句點與一個空白），會讓 [k] 誤判 §5.1 不存在。放寬章節標題比對規則（句點與空白數可變，標題需以大寫字母開頭），並逐一列出 4 份 RFC 偵測到的章節清單確認沒有誤抓。
+- **步驟 3 寫入**：
+  - 新增 `sources/rfc6928.md`
+  - `concepts/slow-start.md` 新增「IW10：實驗性提案」小節（明確標示 Experimental）
+  - `conflicts.md` 新增第 4、5 筆：IW 上限（2～4 vs 10）、SYN 遺失後的 IW（MUST 為 1 vs 建議不重設）
+  - `parameters.md` 新增 IW10 上限、14600 位元組、4 KB 回退門檻、最多省 4 個 RTT、實驗結果數字；`timeline.md` 新增 2013 列；`glossary.md` 新增 IW10；`index.md` 新增來源頁
+  - 自我複查：slow-start 頁「網頁物件變大」原本標成 §4，實際出自 §5.2，已修正。
+- **步驟 4 Lint**：第 1 輪 PASS（`reports/lint-20261122-204345.md`，17 個檔案，0 項違規）。
+
+---
+
 ## 2026-11-22 - 文獻 3/6 rfc6582（接手者：Claude）
 
 - **步驟 0 來源驗證**：標題 "The NewReno Modification to TCP's Fast Recovery Algorithm"、作者 Henderson / Floyd / Gurtov / Nishida、April 2012、Standards Track、Obsoletes 3782、共 16 頁，與原文相符。

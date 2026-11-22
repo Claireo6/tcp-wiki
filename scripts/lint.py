@@ -176,7 +176,8 @@ def load_rfc_sections(rfc_num):
     sections = set()
     with open(path, "r", encoding="utf-8", errors="ignore") as f:
         for line in f:
-            m = re.match(r'^(\d+(?:\.\d+)*)\.\s{2}\S', line)
+            # 標準格式為「3.1.  Title」，但原文偶有排版不一致（例如 RFC 6928 的「5.1 Reducing Latency」），因此句點與空白數放寬
+            m = re.match(r'^(\d+(?:\.\d+)*)\.?\s+[A-Z]', line)
             if m:
                 sections.add(m.group(1))
             m = re.match(r'^Appendix ([A-Z])\.\s', line)
