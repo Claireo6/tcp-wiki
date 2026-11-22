@@ -37,7 +37,21 @@ RFC 5681 自己承認，這個演算法在同一批封包中有多個遺失時�
 
 > Note: This algorithm is known to generally not recover efficiently from multiple losses in a single flight of packets [FF96]. [RFC 5681 §3.2]
 
+## NewReno 的修正（RFC 6582，2012）
+
+針對上述限制，RFC 6582 修改了 fast recovery 對「partial ACK」的反應 [RFC 6582 §1]：
+- 多個封包遺失時，重傳區段換來的 ACK 只確認一部分資料，稱為 partial ACK [RFC 6582 §1]。
+- NewReno 收到 partial ACK 時，立即重傳下一個未確認的區段，並**留在** fast recovery，直到 ACK 確認到 `recover` 記錄的序號為止 [RFC 6582 §3.2]。
+- 這樣可以避免逾時，也避免同一事件造成多次視窗縮減 [RFC 6582 §3.1]。
+
+> If this ACK does *not* acknowledge all of the data up to and including recover, then this is a partial ACK. In this case, retransmit the first unacknowledged segment. [RFC 6582 §3.2]
+
+完整步驟見 [NewReno](../algorithms/new-reno.md)；Reno 的弱點見 [Reno](../algorithms/reno.md)。
+
 ## 參考來源
 - [Jacobson 1988, §Intro, p.2]
 - [RFC 5681 §3.2]
 - [RFC 5681 §4.3]
+- [RFC 6582 §1]
+- [RFC 6582 §3.1]
+- [RFC 6582 §3.2]

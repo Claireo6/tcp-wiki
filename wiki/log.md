@@ -4,6 +4,22 @@
 
 ---
 
+## 2026-11-22 - 文獻 3/6 rfc6582（接手者：Claude）
+
+- **步驟 0 來源驗證**：標題 "The NewReno Modification to TCP's Fast Recovery Algorithm"、作者 Henderson / Floyd / Gurtov / Nishida、April 2012、Standards Track、Obsoletes 3782、共 16 頁，與原文相符。
+- **名稱查證**：
+  - 「Reno」：§1 說明 RFC 5681 fast recovery 的典型實作最早出現在 1990 BSD Reno 版本、並在 [FF96] 被稱為 "Reno algorithm"，因此本輪起可以建立 `algorithms/reno.md`。
+  - 「Tahoe」：討論階段原本回報「全文未出現」，寫入前複查發現**出現 1 次**，但只在參考文獻 [FF96] 的論文標題中，正文沒有任何定義。已向使用者更正，並維持不建立 Tahoe 內容。（教訓：名稱查證要用全文搜尋確認，不能只憑閱讀印象。）
+- **步驟 3 寫入**：
+  - 新增 `sources/rfc6582.md`、`algorithms/reno.md`、`algorithms/new-reno.md`
+  - 更新 `concepts/fast-retransmit-fast-recovery.md`（NewReno 修正段落）
+  - `conflicts.md` 新增第 3 筆：結束 fast recovery 時的 `cwnd`（RFC 5681 vs RFC 6582，兩者無正式 Updates 關係）
+  - `timeline.md` 新增 2012 列；`glossary.md` 新增 Reno、NewReno、Partial ACK、Full ACK、`recover`；`parameters.md` 新增 4*SMSS 啟發式門檻；`index.md` 新增 3 頁
+  - 撰寫 `new-reno.md` 時，原本寫了「Reno 收到 partial ACK 就結束 fast recovery [RFC 6582 §1]」，複查發現 §1 沒有這句話，改引用 RFC 5681 §3.2 第 6 步。
+- **步驟 4 Lint**：第 1 輪 PASS（`reports/lint-20261122-203645.md`，16 個檔案，0 項違規）。
+
+---
+
 ## 2026-11-22 - 文獻 2/6 rfc5681（接手者：Claude，於使用者的另一個對話中直接讀寫專案資料夾）
 
 - **背景**：Antigravity 內 Gemini 與 Claude/GPT 額度皆已用完，改由另一個對話中的 Claude 透過資料夾連線接手；6 步驟流程不變，使用者負責確認與 git commit。

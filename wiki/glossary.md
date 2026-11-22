@@ -20,6 +20,11 @@
 | `RW`（Restart Window） | 重啟視窗 | 閒置一段時間後重新傳送時的 `cwnd` 大小 | [RFC 5681 §2] |
 | Duplicate ACK | 重複確認 | 符合 RFC 5681 §2 五個條件、確認號未前進的 ACK | [RFC 5681 §2] |
 | Deflating the window | 縮回視窗 | fast recovery 結束時把 `cwnd` 設回 `ssthresh` | [RFC 5681 §3.2] |
+| Reno | Reno | RFC 5681 fast recovery 的典型實作，最早出現在 1990 BSD Reno 版本 | [RFC 6582 §1] |
+| NewReno | NewReno | 修改 fast recovery 對 partial ACK 的反應，處理同一視窗多個遺失 | [RFC 6582 §1] |
+| Partial ACK | 部分確認 | 只確認進入 fast retransmit 前已送出資料一部分的 ACK | [RFC 6582 §1] |
+| Full ACK | 完全確認 | 確認到 `recover` 為止全部資料的 ACK，NewReno 收到後結束 fast recovery | [RFC 6582 §3.2] |
+| `recover` | 恢復點 | fast recovery 結束前必須被確認的送出序號 | [RFC 6582 §2] |
 | Conservation of Packets | 封包守恆原則 | 在穩定平衡連線中，舊封包離開網路前不得注入新封包；傳送端以 ACK 作為時脈調節 | [Jacobson 1988, §Intro, p.2] |
 | Self-clocking | 自我時脈 | 傳送端以接收端回傳的 ACK 為觸發信號送出新封包，使傳輸節奏對齊瓶頸鏈路速率 | [Jacobson 1988, §1, p.3] |
 | Exponential Backoff | 指數退避 | 連續逾時重傳時將 RTO 區間每次加倍，以防止壅塞崩潰 | [Jacobson 1988, §2, p.7] |
@@ -45,3 +50,6 @@
 - [Jacobson 1988, §1, p.3]
 - [Jacobson 1988, §2, p.7]
 - [Jacobson 1988, §B, p.20]
+- [RFC 6582 §1]
+- [RFC 6582 §2]
+- [RFC 6582 §3.2]

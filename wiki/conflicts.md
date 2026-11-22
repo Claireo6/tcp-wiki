@@ -2,7 +2,7 @@
 
 本頁面彙整跨文獻間不同標準、非正式演進提案（如 Standards Track vs Experimental）、或學術論文與工程標準間存在分歧之記錄。每一項目均標註兩方或以上之來源出處。
 
-> 本頁只收錄**已 ingest** 文獻之間的歧異。尚未 ingest 的文獻（RFC 6582、RFC 6928、RFC 9438、BBR）相關項目，會在 ingest 該篇時才加入。
+> 本頁只收錄**已 ingest** 文獻之間的歧異。尚未 ingest 的文獻（RFC 6928、RFC 9438、BBR）相關項目，會在 ingest 該篇時才加入。
 
 ## 歧異項目彙整
 
@@ -17,7 +17,15 @@
 - **來源一（學術論文）**：逾時時，把當前視窗大小的一半記錄到 `ssthresh` [Jacobson 1988, §B, p.20]。
 - **來源二（Standards Track）**：`ssthresh = max(FlightSize / 2, 2*SMSS)`，並提醒不要用 `cwnd` 取代 `FlightSize` [RFC 5681 §3.1]。
 
+### 3. 結束 fast recovery 時的 `cwnd`
+- **分歧描述**：RFC 5681 在收到確認新資料的 ACK 時一律把 `cwnd` 設回 `ssthresh`；RFC 6582 只在 full ACK 時結束 fast recovery，並允許兩種設定方式。RFC 6582 標頭只取代 RFC 3782，與 RFC 5681 沒有正式 Updates 關係，依規則列為歧異；不過 RFC 5681 本身建議實作能處理多重遺失的進階修復演算法。
+- **來源一（Standards Track）**：收到確認先前未確認資料的 ACK 時，`cwnd` 設為 `ssthresh`（deflating）[RFC 5681 §3.2]；並建議採用如 RFC 3782 的進階修復演算法 [RFC 5681 §4.3]。
+- **來源二（Standards Track）**：只有 full ACK 才結束 fast recovery，`cwnd` 設為 `min(ssthresh, max(FlightSize, SMSS) + SMSS)` 或 `ssthresh`；partial ACK 則繼續留在 fast recovery [RFC 6582 §3.2]。
+
 ## 參考來源
 - [Jacobson 1988, §1, p.4]
 - [Jacobson 1988, §B, p.20]
 - [RFC 5681 §3.1]
+- [RFC 5681 §3.2]
+- [RFC 5681 §4.3]
+- [RFC 6582 §3.2]
