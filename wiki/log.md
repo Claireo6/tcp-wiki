@@ -4,6 +4,37 @@
 
 ---
 
+## 2026-11-22 - 文獻 2/6 rfc5681（接手者：Claude，於使用者的另一個對話中直接讀寫專案資料夾）
+
+- **背景**：Antigravity 內 Gemini 與 Claude/GPT 額度皆已用完，改由另一個對話中的 Claude 透過資料夾連線接手；6 步驟流程不變，使用者負責確認與 git commit。
+- **步驟 0 來源驗證**：標題 "TCP Congestion Control"、作者 Allman / Paxson / Blanton、September 2009、Standards Track、Obsoletes 2581、共 18 頁，與原文相符。全文未出現 Reno 或 Tahoe。
+
+### 寫入前發現的問題：骨架頁面被預先填入未查證內容
+第 0 步建立骨架時，`parameters.md`、`conflicts.md`、`glossary.md`、`timeline.md` 被預先填入尚未 ingest 的文獻內容，且多處出處錯誤：
+- `glossary.md` 6 處引用 RFC 5681 §1.2（寫成出處標籤格式）：RFC 5681 沒有 §1.2（定義在 §2）。
+- `conflicts.md`、`timeline.md` 引用 BBR "Introduction"：BBR 原文沒有這個小節。
+- `parameters.md` 把 CUBIC β = 0.7 標成 RFC 9438 §4.1：§4.1 只列常數名稱，數值在 §4.6。
+- `timeline.md` 寫「2009 Reno 規範化」：RFC 5681 全文沒有 Reno 一詞。
+
+這些錯誤 lint 全部沒抓到，因為 [c] 只檢查出處格式。處理方式：
+1. 移除所有尚未 ingest 文獻（RFC 6928、RFC 9438、BBR）的預填內容，等 ingest 該篇時再加入。
+2. **新增 lint 規則 [k] 出處存在性**：檢查 RFC 章節是否真的存在於 raw 原文、Jacobson 章節與頁碼是否在範圍內、BBR 小節標題是否存在。新規則第一次執行即抓到 10 項錯誤出處（報告：`reports/lint-20261122-202204.md`）。
+3. AGENTS.md 新增兩條原則：名稱與標籤也需要出處、不得預先填寫未 ingest 的內容。
+
+### 步驟 3 寫入
+- 新增 `wiki/sources/rfc5681.md`、`wiki/concepts/rwnd-vs-cwnd.md`
+- 更新 `concepts/slow-start.md`（IW 表、slow start 使用條件、ABC、LW、RW）、`concepts/congestion-avoidance.md`（公式 (3)、公式 (4)、FlightSize 提醒）、`concepts/fast-retransmit-fast-recovery.md`（完整 6 步驟與多重遺失限制）、`concepts/packet-loss-detection.md`（兩種遺失信號、duplicate ACK 定義）
+- 更新 `parameters.md`（新增 SMSS 分界、LW、RW、ssthresh 公式、3*SMSS、Limited Transmit、500 ms、RMSS 536）、`conflicts.md`（Jacobson vs RFC 5681：初始 cwnd、ssthresh 基準）、`timeline.md`（2009 列）、`glossary.md`（修正 §1.2 → §2，新增 IW/LW/RW/Duplicate ACK/Deflating）、`index.md`
+- 未建立 `algorithms/reno.md`：RFC 5681 沒有使用 Reno 名稱，留待 RFC 6582 ingest。
+- `rwnd-vs-cwnd.md` 註明「Flow Control vs Congestion Control」對比名稱不見於 raw 文獻，屬教學用語。
+
+### 步驟 4 Lint（2 輪）
+- **第 1 輪 FAIL**（`reports/lint-20261122-202411.md`，1 項 [d]）：原文 `full-` 換行接 `sized`，lint 的斷字合併把它變成 `fullsized`，導致正確引文比對失敗。這是 **lint 本身的 bug**：原文中「排版斷字」與「本來就有連字號的複合字斷在行尾」兩種情況都存在。修正：raw 正規化產生兩個版本（合併／保留連字號），引文符合任一版本即可。
+- **第 2 輪 PASS**（`reports/lint-20261122-202426.md`，13 個檔案，0 項違規）。
+- **修正後負向測試**：把引文的 "roughly 1" 竄改成 "roughly 2"，lint 仍正確報錯（`reports/lint-20261122-202434.md`），還原後 PASS（`reports/lint-20261122-202435.md`）。
+
+---
+
 ## 2026-11-22 - 文獻 1/6 jacobson1988：步驟 3–5 補完（Claude Sonnet 接手）
 
 - **背景說明**：前一個 AI（Gemini）在執行文獻 jacobson1988 的「步驟 3：寫入」中途因額度耗盡而中斷，使用者以 wip commit 存檔，後換用 Claude Sonnet 4.6（Thinking）繼續作業。

@@ -23,6 +23,28 @@
 
 > "On a timeout, half the current window size is recorded in ssthresh (this is the multiplicative decrease part of the congestion avoidance algorithm), then cwnd is set to 1 packet (this initiates slow-start)." [Jacobson 1988, §B, p.20]
 
+## RFC 5681 的正式規範（2009）
+
+### 增加速度
+congestion avoidance 期間，`cwnd` 每個 RTT 大約增加 1 個完整區段，直到偵測到壅塞為止；且每個 RTT 增加量**不得超過** `SMSS` 位元組 [RFC 5681 §3.1]。
+
+> During congestion avoidance, cwnd is incremented by roughly 1 full-sized segment per round-trip time (RTT). [RFC 5681 §3.1]
+
+常見的實作公式是每收到一個確認新資料的 ACK 就執行 `cwnd += SMSS*SMSS/cwnd`（公式 (3)），這是「每個 RTT 增加 1 個區段」的近似 [RFC 5681 §3.1]。
+
+> cwnd += SMSS*SMSS/cwnd [RFC 5681 §3.1]
+
+### 偵測到逾時時的乘法減少
+重傳計時器偵測到遺失時，`ssthresh` 不得超過公式 (4) 的值 [RFC 5681 §3.1]：
+
+> ssthresh = max (FlightSize / 2, 2*SMSS) [RFC 5681 §3.1]
+
+RFC 5681 特別提醒：應使用 `FlightSize`（已送出未確認的資料量），**不是** `cwnd`；直接用 `cwnd` 是常見錯誤，因為 `cwnd` 在某些實作中可能遠大於 `rwnd` [RFC 5681 §3.1]。
+
+> Implementation Note: An easy mistake to make is to simply use cwnd, rather than FlightSize, which in some implementations may incidentally increase well beyond rwnd. [RFC 5681 §3.1]
+
+這與 Jacobson 1988「記錄當前視窗大小的一半」的寫法不同，記錄於 [歧異與衝突對照表](../conflicts.md)。
+
 ## 參考來源
 - [Jacobson 1988, §3, p.8]
 - [Jacobson 1988, §3, p.8-9]
@@ -32,3 +54,4 @@
 - [Jacobson 1988, §3, p.10-11]
 - [Jacobson 1988, §B, p.20]
 - [Jacobson 1988, §D, p.23]
+- [RFC 5681 §3.1]

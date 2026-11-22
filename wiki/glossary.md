@@ -6,15 +6,20 @@
 
 | 英文術語 / 變數 | 台灣繁體中文 | 簡短定義 | 來源依據 |
 | :--- | :--- | :--- | :--- |
-| `cwnd` | 壅塞視窗 | 傳送端依據網路承載能力所維護的視窗上限 | [RFC 5681 §1.2] |
-| `rwnd` | 接收端視窗 | 接收端透過 TCP 標頭回傳之可用接收緩衝區大小 | [RFC 5681 §1.2] |
-| `ssthresh` | 慢啟動門檻 | 區隔 slow start 與 congestion avoidance 之門檻值；逾時後設為當前視窗一半 | [RFC 5681 §1.2], [Jacobson 1988, §B, p.20] |
-| `SMSS` | 傳送端最大區段大小 | 傳送端能傳輸的最大 TCP 區段大小（位元組） | [RFC 5681 §1.2] |
-| `FlightSize` | 飛行中資料量 | 已送出但尚未收到累加確認（ACK）的資料量 | [RFC 5681 §1.2] |
+| `cwnd` | 壅塞視窗 | 傳送端依據網路承載能力所維護的視窗上限 | [RFC 5681 §2] |
+| `rwnd` | 接收端視窗 | 接收端透過 TCP 標頭回傳之可用接收緩衝區大小 | [RFC 5681 §2] |
+| `ssthresh` | 慢啟動門檻 | 區隔 slow start 與 congestion avoidance 之門檻值；逾時後設為當前視窗一半 | [RFC 5681 §2], [Jacobson 1988, §B, p.20] |
+| `SMSS` | 傳送端最大區段大小 | 傳送端能傳輸的最大 TCP 區段大小（位元組） | [RFC 5681 §2] |
+| `FlightSize` | 飛行中資料量 | 已送出但尚未收到累加確認（ACK）的資料量 | [RFC 5681 §2] |
 | Slow Start | 慢啟動（Slow Start） | 連線初期或逾時後指數型擴增 `cwnd` 之機制 | [RFC 5681 §3.1] |
 | Congestion Avoidance | 壅塞避免（Congestion Avoidance） | 線性探測可用網路頻寬之機制 | [RFC 5681 §3.1] |
 | Fast Retransmit | 快速重傳（Fast Retransmit） | 收到三次重複 ACK 時不必等待逾時即重傳之機制 | [RFC 5681 §3.2] |
 | Fast Recovery | 快速恢復（Fast Recovery） | 快速重傳後維持資料管線流動之視窗調整機制 | [RFC 5681 §3.2] |
+| `IW`（Initial Window） | 初始視窗 | 三向交握完成後的 `cwnd` 大小 | [RFC 5681 §2] |
+| `LW`（Loss Window） | 遺失視窗 | 重傳計時器偵測到遺失後的 `cwnd` 大小 | [RFC 5681 §2] |
+| `RW`（Restart Window） | 重啟視窗 | 閒置一段時間後重新傳送時的 `cwnd` 大小 | [RFC 5681 §2] |
+| Duplicate ACK | 重複確認 | 符合 RFC 5681 §2 五個條件、確認號未前進的 ACK | [RFC 5681 §2] |
+| Deflating the window | 縮回視窗 | fast recovery 結束時把 `cwnd` 設回 `ssthresh` | [RFC 5681 §3.2] |
 | Conservation of Packets | 封包守恆原則 | 在穩定平衡連線中，舊封包離開網路前不得注入新封包；傳送端以 ACK 作為時脈調節 | [Jacobson 1988, §Intro, p.2] |
 | Self-clocking | 自我時脈 | 傳送端以接收端回傳的 ACK 為觸發信號送出新封包，使傳輸節奏對齊瓶頸鏈路速率 | [Jacobson 1988, §1, p.3] |
 | Exponential Backoff | 指數退避 | 連續逾時重傳時將 RTO 區間每次加倍，以防止壅塞崩潰 | [Jacobson 1988, §2, p.7] |
@@ -33,7 +38,7 @@
 | 默認 | 預設 | 預設設定統一使用「預設」 |
 
 ## 參考來源
-- [RFC 5681 §1.2]
+- [RFC 5681 §2]
 - [RFC 5681 §3.1]
 - [RFC 5681 §3.2]
 - [Jacobson 1988, §Intro, p.2]

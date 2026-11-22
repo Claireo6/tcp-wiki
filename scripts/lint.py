@@ -165,11 +165,65 @@ def check_citations(reporter, wiki_files):
                         reporter.add_error("[c] 引用格式", f"引用格式不符規範: `{tag}`", file_path=wf, line_num=idx)
 
 
-def normalize_quote_text(text):
+# [k] 出處章節存在性：只檢查格式不夠，還要確認被引用的章節真的存在於 raw/ 原文
+JACOBSON_VALID_SECTIONS = {"Intro", "1", "2", "3", "4", "A", "B", "C", "D"}  # 依 raw/jacobson1988.txt 實際章節結構
+JACOBSON_MAX_PAGE = 25
+
+def load_rfc_sections(rfc_num):
+    path = os.path.join(RAW_DIR, f"rfc{rfc_num}.txt")
+    if not os.path.exists(path):
+        return None
+    sections = set()
+    with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            m = re.match(r'^(\d+(?:\.\d+)*)\.\s{2}\S', line)
+            if m:
+                sections.add(m.group(1))
+            m = re.match(r'^Appendix ([A-Z])\.\s', line)
+            if m:
+                sections.add(m.group(1))
+    return sections
+
+def check_citation_targets(reporter, wiki_files):
+    """[k] 出處章節存在性檢查"""
+    rfc_cache = {}
+    bbr_raw = None
+    for fname in os.listdir(RAW_DIR):
+        if fname.startswith("bbr") and fname.endswith(".txt"):
+            with open(os.path.join(RAW_DIR, fname), "r", encoding="utf-8", errors="ignore") as f:
+                bbr_raw = " ".join(f.read().split())
+    for wf in wiki_files:
+        with open(wf, "r", encoding="utf-8") as f:
+            for idx, line in enumerate(f, 1):
+                for m in re.finditer(r'\[RFC\s+(\d+)\s+§([\d\.A-Za-z]+)\]', line):
+                    num, sec = m.group(1), m.group(2).rstrip('.')
+                    if num not in rfc_cache:
+                        rfc_cache[num] = load_rfc_sections(num)
+                    secs = rfc_cache[num]
+                    if secs is None:
+                        reporter.add_error("[k] 出處存在性", f"raw/ 中找不到 rfc{num}.txt：`{m.group(0)}`", file_path=wf, line_num=idx)
+                    elif sec not in secs:
+                        reporter.add_error("[k] 出處存在性", f"RFC {num} 原文沒有 §{sec} 這個章節：`{m.group(0)}`", file_path=wf, line_num=idx)
+                for m in re.finditer(r'\[Jacobson\s+1988,\s+§([0-9A-Za-z]+),\s+p\.(\d+)(?:-(\d+))?\]', line):
+                    sec, p1, p2 = m.group(1), int(m.group(2)), int(m.group(3) or m.group(2))
+                    if sec not in JACOBSON_VALID_SECTIONS:
+                        reporter.add_error("[k] 出處存在性", f"Jacobson 1988 沒有 §{sec} 這個章節：`{m.group(0)}`", file_path=wf, line_num=idx)
+                    if not (1 <= p1 <= p2 <= JACOBSON_MAX_PAGE):
+                        reporter.add_error("[k] 出處存在性", f"Jacobson 1988 頁碼超出範圍 1-{JACOBSON_MAX_PAGE}：`{m.group(0)}`", file_path=wf, line_num=idx)
+                for m in re.finditer(r'\[BBR\s+\d{4},\s+"([^"]+)"', line):
+                    title = m.group(1)
+                    if bbr_raw is not None and title not in bbr_raw:
+                        reporter.add_error("[k] 出處存在性", f"BBR 原文找不到小節標題 \"{title}\"：`{m.group(0)}`", file_path=wf, line_num=idx)
+
+
+def normalize_quote_text(text, keep_hyphen=False):
     if not text:
         return ""
-    # 處理行尾連字號斷字，例如 "win- dow" 或 "win-\ndow" -> "window"
-    text = re.sub(r'(\b\w+)-[\s\r\n]+(\w+\b)', r'\1\2', text)
+    # 處理行尾連字號斷字：
+    # keep_hyphen=False："win- dow" -> "window"（排版斷字）
+    # keep_hyphen=True ："full-\nsized" -> "full-sized"（本來就有連字號的複合字，剛好斷在行尾）
+    # 原文兩種情況都會出現，因此 raw 會各產生一個版本，引文符合任一版本即可。
+    text = re.sub(r'(\b\w+)-[\s\r\n]+(\w+\b)', r'\1-\2' if keep_hyphen else r'\1\2', text)
     # 將常見引號標準化
     text = text.replace('“', '"').replace('”', '"').replace('‘', "'").replace('’', "'")
     return " ".join(text.split())
@@ -190,7 +244,8 @@ def check_verbatim_quotes(reporter, wiki_files):
 
             if raw_path and os.path.exists(raw_path):
                 with open(raw_path, "r", encoding="utf-8", errors="ignore") as f:
-                    raw_texts[source_key] = normalize_quote_text(f.read())
+                    raw_src = f.read()
+                raw_texts[source_key] = (normalize_quote_text(raw_src), normalize_quote_text(raw_src, keep_hyphen=True))
             else:
                 raw_texts[source_key] = None
         return raw_texts[source_key]
@@ -231,11 +286,11 @@ def check_verbatim_quotes(reporter, wiki_files):
                     quote_text = quote_text.strip().strip('"').strip('“').strip('”').strip("'")
                     
                     if len(quote_text) > 10 and re.search(r'[a-zA-Z]{3,}', quote_text):
-                        compressed_quote = normalize_quote_text(quote_text)
                         raw_content = get_raw_content(target_source)
                         if not raw_content:
                             reporter.add_error("[d] 原文比對", f"找不到對應的 {display_source} 來源檔", file_path=wf, line_num=start_line)
-                        elif compressed_quote not in raw_content:
+                        elif not any(normalize_quote_text(quote_text, keep_hyphen=k) in raw_content[i] for i, k in ((0, False), (1, True))):
+                            compressed_quote = normalize_quote_text(quote_text)
                             reporter.add_error("[d] 原文比對", f"英文原句無法在 {display_source} 找到完全一致匹配: `{compressed_quote[:50]}...`", file_path=wf, line_num=start_line)
             else:
                 idx += 1
@@ -448,6 +503,7 @@ def main():
     check_orphan_pages(reporter, wiki_files)
     check_internal_links(reporter, wiki_files)
     check_citations(reporter, wiki_files)
+    check_citation_targets(reporter, wiki_files)
     check_verbatim_quotes(reporter, wiki_files)
     check_forbidden_terms(reporter, wiki_files)
     check_source_headers(reporter, wiki_files)

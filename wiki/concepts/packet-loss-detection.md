@@ -24,6 +24,25 @@
 
 除計時器逾時之外，作者在 1988 年論文中已將快速重傳（Fast Retransmit）列入 4BSD TCP 之 7 個新演算法中 [Jacobson 1988, §Intro, p.2]。然而該文並未展開其詳細偵測機制，僅預告將於後續 RFC 文件中完整規範 [Jacobson 1988, §Intro, p.2]。
 
+## RFC 5681：兩種遺失信號（2009）
+
+RFC 5681 的演算法以封包遺失作為壅塞信號，而遺失有兩種偵測方式 [RFC 5681 §3]：
+
+| 偵測方式 | 觸發條件 | 之後的 `cwnd` |
+| :--- | :--- | :--- |
+| 重傳計時器逾時（Timeout） | 計時器到期 | 降為 LW = 1 個區段，重新 slow start [RFC 5681 §3.1] |
+| 3 個 duplicate ACK | 連續收到 3 個重複 ACK [RFC 5681 §3.2] | 進入 fast recovery，`cwnd = ssthresh + 3*SMSS` [RFC 5681 §3.2] |
+
+### Duplicate ACK 的定義
+一個 ACK 必須同時滿足 5 個條件才算 duplicate：傳送端有未確認資料、ACK 不帶資料、SYN 與 FIN 都沒設、確認號等於目前收到的最大確認號、通告視窗與上一個 ACK 相同 [RFC 5681 §2]。
+
+### 為什麼會出現 duplicate ACK
+接收端收到不按順序的區段時，**應該**立刻送出 duplicate ACK，告訴傳送端它在等哪個序號 [RFC 5681 §3.2]。不過 duplicate ACK 不一定代表遺失，也可能來自網路重新排序或封包被複製 [RFC 5681 §3.2]。
+
+> The fast retransmit algorithm uses the arrival of 3 duplicate ACKs (as defined in section 2, without any intervening ACKs which move SND.UNA) as an indication that a segment has been lost. [RFC 5681 §3.2]
+
+完整流程見 [快速重傳與快速恢復](fast-retransmit-fast-recovery.md)。
+
 ## 參考來源
 - [Jacobson 1988, §Intro, p.1-2]
 - [Jacobson 1988, §Intro, p.2]
@@ -35,3 +54,7 @@
 - [Jacobson 1988, §A, p.19-20]
 - [Jacobson 1988, §A, p.20]
 - [Jacobson 1988, §C, p.21]
+- [RFC 5681 §2]
+- [RFC 5681 §3]
+- [RFC 5681 §3.1]
+- [RFC 5681 §3.2]

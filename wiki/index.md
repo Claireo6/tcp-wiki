@@ -11,12 +11,14 @@
 
 ## 文獻摘要（Sources）
 - [Congestion Avoidance and Control (Jacobson 1988)](sources/jacobson1988.md) - 奠定現代 TCP 壅塞控制基礎，提出慢啟動、AIMD 壅塞避免與 RTT 變異估算等 7 大演算法。
+- [TCP Congestion Control (RFC 5681)](sources/rfc5681.md) - 2009 年 Standards Track，正式定義 slow start、congestion avoidance、fast retransmit、fast recovery。
 
 ## 核心機制（Concepts）
+- [接收視窗與壅塞視窗](concepts/rwnd-vs-cwnd.md) - rwnd 保護接收端、cwnd 保護網路，實際傳送量取兩者較小值。
 - [慢啟動](concepts/slow-start.md) - 依據封包守恆與 ACK 時脈指數級探測頻寬，初始與逾時後設 cwnd=1。
 - [壅塞避免](concepts/congestion-avoidance.md) - 以封包逾時為壅塞信號，採加法增加（每 RTT 增 1）與乘法減少（減半 0.5）調節視窗。
-- [快速重傳與快速恢復](concepts/fast-retransmit-fast-recovery.md) - 1988 論文列為 4BSD TCP 7 大演算法之一，具體機制留待後續 RFC 規範。
-- [封包遺失偵測](concepts/packet-loss-detection.md) - 介紹 RTO 均值與變異量估算（RTO=a+4v）、指數退避與早期快速重傳概念。
+- [快速重傳與快速恢復](concepts/fast-retransmit-fast-recovery.md) - 3 個 duplicate ACK 觸發重傳，fast recovery 6 步驟調整 cwnd；多個遺失時效率不佳。
+- [封包遺失偵測](concepts/packet-loss-detection.md) - 逾時與 3 個 duplicate ACK 兩種遺失信號、RTO 估算（RTO=a+4v）與指數退避。
 
 ## 演算法（Algorithms）
 （尚無演算法頁，待消化文獻時建立）

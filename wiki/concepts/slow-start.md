@@ -29,9 +29,45 @@
 
 若連線在一段時間內無任何在途資料（資料皆已確認）且閒置時間超過 $RTO$（`idle && now - lastsnd > rto`），網路管線已排空，ACK 時脈亦已消失 [Jacobson 1988, §C, p.22]。此時若直接發送全視窗封包會形成突發衝擊，因此必須將 `cwnd` 重設為 1 個封包，強制重新進入 slow start 重新建立時脈 [Jacobson 1988, §C, p.22]。
 
+## RFC 5681 的正式規範（2009）
+
+RFC 5681 將 slow start 規定為傳送端**必須**使用的演算法，用途是在網路狀況未知時慢慢探測可用容量，並啟動 ACK 時脈 [RFC 5681 §3.1]。
+
+### 初始視窗（IW）
+`IW` 的上限依 `SMSS` 大小而定 [RFC 5681 §3.1]：
+
+| `SMSS` 大小 | `IW` 上限 |
+| :--- | :--- |
+| 大於 2190 位元組 [RFC 5681 §3.1] | 2 個區段 [RFC 5681 §3.1] |
+| 大於 1095 且不超過 2190 位元組 [RFC 5681 §3.1] | 3 個區段 [RFC 5681 §3.1] |
+| 不超過 1095 位元組 [RFC 5681 §3.1] | 4 個區段 [RFC 5681 §3.1] |
+
+> If SMSS > 2190 bytes: IW = 2 * SMSS bytes and MUST NOT be more than 2 segments [RFC 5681 §3.1]
+
+### 何時使用 slow start
+- `ssthresh` 的初始值應設得任意高，讓網路狀況而不是主機設定決定傳送速率 [RFC 5681 §3.1]。
+- `cwnd < ssthresh` 時使用 slow start；`cwnd > ssthresh` 時使用 congestion avoidance；兩者相等時可任選其一 [RFC 5681 §3.1]。
+
+> The slow start algorithm is used when cwnd < ssthresh, while the congestion avoidance algorithm is used when cwnd > ssthresh. [RFC 5681 §3.1]
+
+### 每個 ACK 增加多少
+slow start 期間，每個確認新資料的 ACK 最多讓 `cwnd` 增加 `SMSS` 位元組；建議使用 `cwnd += min(N, SMSS)`，其中 N 為該 ACK 新確認的位元組數，可防止接收端以「ACK Division」手法灌大 `cwnd` [RFC 5681 §3.1]。
+
+### 逾時後與閒置後
+- 重傳計時器逾時後，`cwnd` 不得超過 loss window（LW），而 LW 等於 1 個完整區段，與 IW 大小無關；之後以 slow start 重新長回 `ssthresh` [RFC 5681 §3.1]。
+- 超過一個重傳逾時時間沒有送出資料時，傳送前 `cwnd` 不得超過 restart window，RW = min(IW, cwnd) [RFC 5681 §4.1]。
+
+> cwnd MUST be set to no more than the loss window, LW, which equals 1 full-sized segment (regardless of the value of IW). [RFC 5681 §3.1]
+
+> For the purposes of this standard, we define RW = min(IW,cwnd). [RFC 5681 §4.1]
+
+與 Jacobson 1988 的初始值差異（1 個封包 vs. 2～4 個區段）記錄於 [歧異與衝突對照表](../conflicts.md)。
+
 ## 參考來源
 - [Jacobson 1988, §Intro, p.2]
 - [Jacobson 1988, §1, p.3]
 - [Jacobson 1988, §1, p.4]
 - [Jacobson 1988, §B, p.20]
 - [Jacobson 1988, §C, p.22]
+- [RFC 5681 §3.1]
+- [RFC 5681 §4.1]
