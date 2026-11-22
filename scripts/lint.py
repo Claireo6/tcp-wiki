@@ -20,10 +20,13 @@ REPORTS_DIR = os.path.join(WORKSPACE_DIR, "reports")
 SLIDES_PATH = os.path.join(WORKSPACE_DIR, "slides", "index.html")
 
 # 正則表達式規範
+# Jacobson 引用格式：
+#   - 一般概念敘述（段落層級）：允許頁碼範圍 p.X-Y（例如 §Intro, p.1-2）
+#   - 數字、公式、英文原句之出處：必須為單一頁碼 p.X
 RFC_CITATION_PATTERN = re.compile(r'^\[RFC\s+\d+\s+§[\d\.A-Za-z]+\]$')
-JACOBSON_CITATION_PATTERN = re.compile(r'^\[Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+\]$')
+JACOBSON_CITATION_PATTERN = re.compile(r'^\[Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+(?:-\d+)?\]$')
 BBR_CITATION_PATTERN = re.compile(r'^\[BBR\s+2016,\s+"[^"]+"\]$')
-ANY_CITATION_REGEX = re.compile(r'\[(?:RFC\s+\d+\s+§[\d\.A-Za-z]+|Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+|BBR\s+2016,\s+"[^"]+")\]')
+ANY_CITATION_REGEX = re.compile(r'\[(?:RFC\s+\d+\s+§[\d\.A-Za-z]+|Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+(?:-\d+)?|BBR\s+2016,\s+"[^"]+")\]')
 SUSPICIOUS_CITATION_REGEX = re.compile(r'\[(RFC|Jacobson|BBR)[^\]]*\]')
 
 DEFAULT_FORBIDDEN_TERMS = [
@@ -211,7 +214,7 @@ def check_verbatim_quotes(reporter, wiki_files):
                 
                 # 檢查 RFC 或 Jacobson 引用
                 rfc_matches = re.findall(r'\[RFC\s+(\d+)\s+§[\d\.A-Za-z]+\]', block_text)
-                jacobson_matches = re.findall(r'\[Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+\]', block_text)
+                jacobson_matches = re.findall(r'\[Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+(?:-\d+)?\]', block_text)
 
                 target_source = None
                 display_source = None

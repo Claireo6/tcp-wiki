@@ -10,7 +10,7 @@
 1. **乘法減少（Multiplicative Decrease）**：當偵測到壅塞信號時，視窗進行大幅度縮減，設定為原本視窗大小的 0.5 倍（即減半）[Jacobson 1988, §D, p.23]。
 2. **加法增加（Additive Increase）**：當未偵測到壅塞信號時，視窗僅能以小幅常數進行線性增加，設定每個往返時間（RTT）增加 1 個封包 [Jacobson 1988, §D, p.23]。
 
-> "The 1-packet increase has less justification than the 0.5 decrease. In fact, it’s almost certainly too large. If the algorithm converges to a window size of w, there are O(w2) packets between drops with an additive increase policy." [Jacobson 1988, §D, p.23]
+> "The 1-packet increase has less justification than the 0.5 decrease. In fact, it's almost certainly too large. If the algorithm converges to a window size of w, there are O(w2 ) packets between drops with an additive increase policy." [Jacobson 1988, §D, p.23]
 
 作者評析指出，0.5 的減少係數具備穩定網路佇列的理論保證，但 1 個封包的加法增量「幾乎肯定太大（almost certainly too large）」[Jacobson 1988, §D, p.23]。若未來 Gateway 能在佇列被推擠過膝點（knee）時提早執行封包丟棄以示警，此增量應再縮小約 4 倍 [Jacobson 1988, §D, p.23]。
 
