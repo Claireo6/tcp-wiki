@@ -1,9 +1,15 @@
-<section data-src="wiki/algorithms/cubic.md">
+<section data-src="wiki/algorithms/cubic.md wiki/sources/rfc9438.md">
 <h2>CUBIC：用時間畫出的三次曲線</h2>
+<p class="q">這頁要回答：在高速、長距離的網路裡，Reno 哪裡不夠好？</p>
 <svg id="cubic-chart" viewBox="0 0 640 240" role="img" aria-label="CUBIC 視窗增長曲線"></svg>
-<p>Reno 每個 RTT 只加 1，在高速長距離網路回升太慢。CUBIC 先快速回升，接近上次壅塞點 W_max 時放慢，超過後再加速探測。遇到壅塞乘 0.7，Reno 是 0.5。</p>
+<ul class="compact">
+<li><b>Reno 的問題</b>：壅塞後每個 RTT 只加 1，大頻寬網路要很久才能回到原本速度。</li>
+<li><b>CUBIC 的做法</b>：記住上次壅塞時的視窗 W_max，先快速長回去、接近 W_max 時放慢（凹），超過後再加速探測（凸）。</li>
+<li><b>減少較溫和</b>：遇到壅塞乘 0.7，Reno 是乘 0.5。</li>
+</ul>
+<div class="box key-box">一句話記住：CUBIC 是目前 Linux、Windows 與 Apple 的預設演算法。</div>
 <details><summary>詳細補充：公式與參數</summary>
-<p>W_cubic(t) = C·(t − K)³ + W_max，C = 0.4。K 是視窗長回 W_max 所需的時間。CUBIC 已是 Linux、Windows 與 Apple 的預設演算法，並以 RFC 9438 正式更新 RFC 5681。</p>
-<p class="cite">出處：[RFC 9438 §1]、[RFC 9438 §3.4]、[RFC 9438 §4.2]、[RFC 9438 §5.1]</p>
+<p>W_cubic(t) = C·(t − K)³ + W_max，C = 0.4。t 是距離上次壅塞的時間，K 是長回 W_max 所需的時間。因為視窗依「時間」而不是「ACK 次數」增長，不同 RTT 的連線也能較公平地分享頻寬。RFC 9438 正式更新了 RFC 5681。</p>
+<p class="cite">出處：[RFC 9438 §1]、[RFC 9438 §3.1]、[RFC 9438 §3.3]、[RFC 9438 §3.4]、[RFC 9438 §4.2]、[RFC 9438 §5.1]</p>
 </details>
 </section>

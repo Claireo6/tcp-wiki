@@ -8,33 +8,44 @@
 :root{--bg:#f7f5f0;--ink:#1f2937;--muted:#64748b;--accent:#1d4ed8;--warn:#c2410c;--card:#ffffff;--line:#e2e8f0}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
-main{height:100%;display:flex;align-items:center;justify-content:center;padding:16px 16px 72px}
-section{display:none;width:min(960px,100%);height:min(600px,calc(100vh - 100px));background:var(--card);border-radius:18px;box-shadow:0 8px 30px rgba(15,23,42,.08);padding:40px 56px;overflow:auto;position:relative}
-section.active{display:block}
-h1{font-size:2.6rem;margin:.6em 0 .2em}
-h2{font-size:1.8rem;margin:0 0 .6em;color:var(--ink)}
-p,li{font-size:1.2rem;line-height:1.75}
-ul,ol{padding-left:1.3em}
-.subtitle{font-size:1.5rem;color:var(--accent);margin-top:0}
-.key{font-weight:700;color:var(--accent);font-size:1.3rem}
-.tag{display:inline-block;background:#fff7ed;color:var(--warn);border:1px solid #fed7aa;border-radius:999px;padding:2px 14px;font-size:1rem}
-.bigstat{display:flex;gap:24px;align-items:center;font-size:2.4rem;font-weight:800;margin:.4em 0}
+main{height:100%;display:flex;align-items:center;justify-content:center;padding:12px 16px 68px}
+section{display:none;width:min(1060px,100%);min-height:min(520px,calc(100vh - 92px));max-height:calc(100vh - 92px);background:var(--card);border-radius:18px;box-shadow:0 8px 30px rgba(15,23,42,.08);padding:34px 52px 28px;overflow:auto;position:relative;flex-direction:column;justify-content:center;gap:14px}
+section.active{display:flex}
+section > *{margin-top:0;margin-bottom:0}
+h1{font-size:2.5rem;margin:.3em 0 0}
+h2{font-size:2rem;color:var(--ink)}
+h3{font-size:1.2rem;margin:0 0 6px;color:var(--accent)}
+p,li{font-size:1.32rem;line-height:1.7}
+ul,ol{padding-left:1.3em;margin:0}
+.subtitle{font-size:1.4rem;color:var(--accent)}
+.q{color:var(--muted);font-size:1.1rem;border-left:3px solid var(--line);padding-left:10px}
+.key{font-weight:700;color:var(--accent);font-size:1.2rem}
+.tag{align-self:flex-start;background:#fff7ed;color:var(--warn);border:1px solid #fed7aa;border-radius:999px;padding:2px 14px;font-size:.95rem}
+.bigstat{display:flex;gap:24px;align-items:center;font-size:2.8rem;font-weight:800}
 .bigstat .bad{color:var(--warn)} .bigstat .arrow{color:var(--muted)}
-table.cmp{border-collapse:collapse;width:100%;font-size:1.15rem;margin:.5em 0}
-table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+.grid2.tight .box{font-size:1.1rem;line-height:1.6}
+.box{background:#f8fafc;border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px}
+.box p,.box li{font-size:1.2rem;margin:0;line-height:1.65}
+.warn-box{border-left-color:var(--warn);background:#fffaf5}
+.key-box{margin-top:6px!important;background:#eff6ff;font-weight:600;font-size:1.25rem}
+ol.steps{display:flex;flex-direction:column;gap:4px}
+ol.steps.compact li,ul.compact li{line-height:1.5}
+table.cmp{border-collapse:collapse;width:100%;font-size:1.2rem}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:12px 14px;text-align:left}
 table.cmp th{color:var(--accent)}
-ol.timeline{list-style:none;padding:0;border-left:3px solid var(--accent);margin-left:8px}
-ol.timeline li{padding-left:18px;position:relative}
-ol.timeline li::before{content:"";position:absolute;left:-9px;top:.7em;width:14px;height:14px;border-radius:50%;background:var(--accent)}
-details{margin-top:1em;background:#f1f5f9;border-radius:10px;padding:10px 16px}
+ol.timeline{list-style:none;padding:0 0 0 4px;border-left:3px solid var(--accent);margin-left:8px}
+ol.timeline li{padding-left:18px;position:relative;line-height:2.3;font-size:1.25rem}
+ol.timeline li::before{content:"";position:absolute;left:-10px;top:.75em;width:14px;height:14px;border-radius:50%;background:var(--accent)}
+details{background:#f1f5f9;border-radius:10px;padding:8px 16px;flex-shrink:0}
 details summary{cursor:pointer;color:var(--accent);font-weight:600}
-details p{font-size:1.05rem}
-.cite{color:var(--muted);font-size:.95rem!important}
-svg{width:100%;height:auto;max-height:240px;display:block;margin:.3em auto}
-.toggle{display:flex;gap:8px;margin-bottom:.3em}
-.toggle button{border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:999px;padding:6px 16px;font-size:1rem;cursor:pointer}
+details p{font-size:1rem;margin:.5em 0}
+.cite{color:var(--muted);font-size:.9rem!important}
+svg{width:100%;height:auto;max-height:230px;display:block;margin:0 auto;flex-shrink:0}
+.toggle{display:flex;gap:8px}
+.toggle button{border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:999px;padding:5px 16px;font-size:.95rem;cursor:pointer}
 .toggle button.on{background:var(--accent);color:#fff}
-.caption{color:var(--muted);font-size:1.05rem}
+.caption{color:var(--muted);font-size:1rem}
 .node rect{fill:#eff6ff;stroke:var(--accent);stroke-width:2}.node.fr rect{fill:#fff7ed;stroke:var(--warn)}
 .node text{text-anchor:middle;font-size:18px;font-weight:700;fill:var(--ink)}
 .edge{fill:none;stroke:#475569;stroke-width:2}.edge.warn{stroke:var(--warn);stroke-dasharray:6 4}
@@ -43,7 +54,7 @@ footer{position:fixed;left:0;right:0;bottom:0;height:60px;display:flex;align-ite
 footer button{border:none;background:var(--ink);color:#fff;border-radius:8px;padding:8px 16px;font-size:1rem;cursor:pointer}
 footer a{color:var(--muted)}
 #progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);transition:width .2s}
-@media (max-width:700px){section{padding:24px}h1{font-size:2rem}h2{font-size:1.4rem}p,li{font-size:1.05rem}}
+@media (max-width:760px){section{padding:20px;height:auto;min-height:calc(100vh - 92px)}.grid2{grid-template-columns:1fr}h1{font-size:2rem}h2{font-size:1.4rem}p,li{font-size:1rem}}
 </style>
 </head>
 <body>
@@ -52,64 +63,83 @@ footer a{color:var(--muted)}
 <section data-src="wiki/index.md">
 <h1>網路為什麼會塞車？</h1>
 <p class="subtitle">TCP 壅塞控制入門</p>
-<p>很多人同時上網時，路由器的緩衝區會滿、封包會被丟掉。TCP 怎麼知道網路塞了？又該送多快？我們從 1988 年一路看到今天。</p>
+<p>很多人同時上網時，路由器的緩衝區會被塞滿，多出來的封包只好被丟掉。TCP 看不到網路內部，那它怎麼知道網路塞了？又該送多快才不會讓情況更糟？</p>
+<div class="grid2">
+<div class="box"><h3>你會學到</h3><ul><li>為什麼需要壅塞控制</li><li>cwnd 怎麼長大、怎麼縮小</li><li>遇到遺失時的兩種反應</li><li>從 1988 年到今天的演進</li></ul></div>
+<div class="box"><h3>先備知識</h3><ul><li>封包交換</li><li>TCP 三向交握</li><li>序號與 ACK（確認）</li></ul></div>
+</div>
 <details><summary>詳細補充：怎麼讀這份教材</summary>
-<p>用鍵盤左右鍵或下方按鈕換頁。每頁右下角標示內容來自 wiki 的哪一頁；點開「詳細補充」可以看到更深入的說明與英文原文出處。</p>
+<p>用鍵盤左右鍵或下方按鈕換頁。每頁下方標示內容來自 wiki 的哪一頁；點開「詳細補充」可以看到更深入的說明與原文出處。</p>
 <p>本教材所有內容都來自專案 wiki，而 wiki 只根據 6 份原始文獻撰寫：Jacobson 1988、RFC 5681、RFC 6582、RFC 6928、RFC 9438、BBR 2017。</p>
 </details>
 </section>
 <section data-src="wiki/sources/jacobson1988.md">
 <h2>1986：網路真的塞爆了</h2>
+<p class="q">這頁要回答：為什麼 TCP 需要壅塞控制？</p>
 <div class="bigstat"><span>32 Kbps</span><span class="arrow">→</span><span class="bad">40 bps</span></div>
-<p>1986 年 10 月，LBL 到 UC Berkeley 的吞吐量掉到原本的千分之一。Jacobson 發現問題出在 TCP 的實作，於是在 4BSD TCP 加入 7 個新演算法。</p>
-<details><summary>詳細補充：7 個演算法</summary>
+<p>1986 年 10 月，網際網路發生「壅塞崩潰（Congestion Collapse）」：LBL 到 UC Berkeley 的吞吐量掉到原本的千分之一。</p>
+<p>Jacobson 研究後發現，問題不在 TCP 協定本身，而在實作面對壅塞時的錯誤行為。例如重傳計時器設得太短，會把排隊延遲誤當成遺失，重送一堆其實沒丟的封包，讓網路更塞。</p>
+<div class="box key-box">一句話記住：傳送端如果不懂得「網路塞了就放慢」，大家一起塞到動不了。</div>
+<details><summary>詳細補充：Jacobson 加入的 7 個演算法</summary>
 <p>(i) 往返時間變異量估算、(ii) 指數型重傳計時器退避、(iii) 慢啟動、(iv) 更主動的接收端確認策略、(v) 壅塞時動態調整視窗、(vi) Karn 箝位重傳退避、(vii) 快速重傳。論文只詳述 (i) 至 (v)，快速重傳留待之後的 RFC 說明。</p>
-<p class="cite">出處：[Jacobson 1988, §Intro, p.1]、[Jacobson 1988, §Intro, p.2]</p>
+<p class="cite">出處：[Jacobson 1988, §Intro, p.1]、[Jacobson 1988, §Intro, p.2]、[Jacobson 1988, §2, p.7]</p>
 </details>
 </section>
 <section data-src="wiki/concepts/rwnd-vs-cwnd.md">
 <h2>兩個視窗：rwnd 與 cwnd</h2>
+<p class="q">這頁要回答：傳送端一次可以送多少資料？</p>
+<p>傳送端同時受到兩個限制，它們保護的對象不同：</p>
 <table class="cmp">
 <tr><th></th><th>rwnd 接收視窗</th><th>cwnd 壅塞視窗</th></tr>
-<tr><td>保護誰</td><td>接收端的緩衝區</td><td>網路</td></tr>
-<tr><td>誰決定</td><td>接收端通告</td><td>傳送端自己調整</td></tr>
+<tr><td>保護誰</td><td>接收端的緩衝區</td><td>路徑上的網路</td></tr>
+<tr><td>誰決定</td><td>接收端通告：「我還裝得下這麼多」</td><td>傳送端自己估計：「網路大概還塞得下這麼多」</td></tr>
 </table>
-<p class="key">實際能送的量 = min(cwnd, rwnd)</p>
+<p>兩個限制都要遵守，所以實際能送的量取兩者中比較小的那個。就算接收端很空，網路塞了，還是得照 cwnd 送。</p>
+<div class="box key-box">一句話記住：實際能送的量 = min(cwnd, rwnd)。整份教材的主角是 cwnd。</div>
 <details><summary>詳細補充：名詞說明</summary>
-<p>這份教材的主角是 cwnd。常聽到的「流量控制（Flow Control）vs. 壅塞控制（Congestion Control）」是教學上的慣用說法，原始文獻並沒有用這組名稱比較兩個視窗。</p>
+<p>常聽到的「流量控制（Flow Control）vs. 壅塞控制（Congestion Control）」是教學上的慣用說法，本教材依據的原始文獻並沒有用這組名稱比較兩個視窗。</p>
 <p class="cite">出處：[RFC 5681 §2]、[RFC 5681 §3.1]、[Jacobson 1988, §1, p.4]</p>
 </details>
 </section>
 <section data-src="wiki/concepts/slow-start.md">
 <h2>封包守恆與 ACK 時脈</h2>
-<p>網路穩定時，要等舊封包離開，才放新封包進去。傳送端把收到的 ACK 當成時脈：收到一個，就送出一個。</p>
-<p class="key">問題：連線剛開始還沒有 ACK，時脈要怎麼啟動？</p>
-<p>答案是慢啟動（Slow Start）。</p>
-<details><summary>詳細補充：Self-clocking</summary>
-<p>Jacobson 把這個原則稱為封包守恆（conservation of packets）。用 ACK 當時脈，送出節奏會自然對齊路徑上最慢的鏈路。</p>
+<p class="q">這頁要回答：傳送端怎麼決定「什麼時候送下一個封包」？</p>
+<ol class="steps">
+<li><b>封包守恆</b>：網路穩定時，要等一個舊封包離開，才放一個新封包進去。</li>
+<li><b>ACK 就是證據</b>：收到一個 ACK，代表有一個封包已經離開網路、抵達接收端。</li>
+<li><b>ACK 時脈（self-clocking）</b>：收到一個 ACK 就送出一個新封包，送出的節奏自然會對齊路徑上最慢的那段鏈路。</li>
+</ol>
+<p>但連線剛開始時還沒有任何 ACK，時脈根本啟動不了。解決這個問題的方法，就是下一頁的慢啟動（Slow Start）。</p>
+<div class="box key-box">一句話記住：TCP 用「收到的 ACK」當節拍器。</div>
+<details><summary>詳細補充：封包守恆會在哪裡失效</summary>
+<p>Jacobson 指出只有三種情況：連線還沒達到平衡；舊封包還沒離開就送出新封包；路徑資源不足，根本達不到平衡。慢啟動處理的是第一種。</p>
 <p class="cite">出處：[Jacobson 1988, §Intro, p.2]、[Jacobson 1988, §1, p.3]</p>
 </details>
 </section>
 <section data-src="wiki/concepts/slow-start.md">
 <h2>慢啟動：從小開始、每輪翻倍</h2>
-<ul>
-<li>起點很小：RFC 5681 規定 2～4 個區段</li>
-<li>每收到一個 ACK，cwnd 加 1，所以每個 RTT 翻倍</li>
-<li>cwnd 超過門檻 ssthresh，改用壅塞避免</li>
-</ul>
-<p class="key">名字叫「慢」，其實是指數成長。</p>
-<details><summary>詳細補充：初始值的演進</summary>
-<p>1988 年的設計從 1 個封包開始；RFC 5681 依區段大小允許 2 到 4 個區段；RFC 6928 實驗性地提議 10 個區段（見後面 IW10 那頁）。ssthresh 一開始要設得很大，讓網路狀況決定何時停止翻倍。</p>
+<p class="q">這頁要回答：連線剛開始，cwnd 怎麼長大？</p>
+<ol class="steps">
+<li><b>起點很小</b>：cwnd 的初始值（IW）依 RFC 5681 是 2～4 個區段，因為一開始不知道網路有多大。</li>
+<li><b>每個 ACK 加 1</b>：每收到一個確認新資料的 ACK，cwnd 加 1 個區段。</li>
+<li><b>所以每個 RTT 翻倍</b>：這一輪送出幾個，下一輪就回來幾個 ACK，cwnd 就變成兩倍（1、2、4……）。</li>
+<li><b>碰到門檻就換模式</b>：cwnd 超過門檻 ssthresh 後，改用壅塞避免。</li>
+</ol>
+<div class="box key-box">一句話記住：名字叫「慢」，其實是指數成長。</div>
+<details><summary>詳細補充：初始值與門檻</summary>
+<p>1988 年的設計從 1 個封包開始；RFC 5681 依區段大小允許 2 到 4 個區段；RFC 6928 實驗性地提議 10 個區段（見 IW10 那頁）。ssthresh 一開始要設得很大，讓網路狀況決定何時停止翻倍。RTT（往返時間）是封包送出到收到 ACK 的時間。</p>
 <p class="cite">出處：[Jacobson 1988, §1, p.4]、[RFC 5681 §3.1]</p>
 </details>
 </section>
 <section data-src="wiki/concepts/congestion-avoidance.md">
 <h2>壅塞避免：加法增、乘法減</h2>
-<ul>
-<li><b>沒事時慢慢加</b>：每個 RTT 約加 1 個區段</li>
-<li><b>出事時大砍</b>：ssthresh 降為在途資料量的一半</li>
-</ul>
-<p>這就是 AIMD。Jacobson 認為減半有充分理由，但每輪加 1 「幾乎肯定太大」。</p>
+<p class="q">這頁要回答：cwnd 到了門檻之後，要怎麼繼續調整？</p>
+<div class="grid2">
+<div class="box"><h3>沒事時：慢慢加</h3><p>每個 RTT 只加約 1 個區段。實作上是每收到一個 ACK 加 1/cwnd，一整輪約加 1。</p></div>
+<div class="box warn-box"><h3>出事時：大幅砍</h3><p>發生遺失代表已經超過網路能負荷的量，門檻 ssthresh 降為在途資料量的一半。</p></div>
+</div>
+<p>這種「加法增加、乘法減少」稱為 AIMD。Jacobson 認為減半有充分理由，但每輪加 1「幾乎肯定太大」。</p>
+<div class="box key-box">一句話記住：試探時小心翼翼，發現壅塞時立刻大退一步。</div>
 <details><summary>詳細補充：為什麼用 FlightSize</summary>
 <p>RFC 5681 的公式是 ssthresh = max(FlightSize / 2, 2*SMSS)。它特別提醒：用 cwnd 取代 FlightSize（已送出但還沒確認的資料量）是常見錯誤。1988 年論文則寫「目前視窗大小的一半」。</p>
 <p class="cite">出處：[RFC 5681 §3.1]、[Jacobson 1988, §B, p.20]、[Jacobson 1988, §D, p.23]</p>
@@ -117,9 +147,14 @@ footer a{color:var(--muted)}
 </section>
 <section data-src="wiki/concepts/packet-loss-detection.md">
 <h2>兩種遺失信號，兩種反應</h2>
+<p class="q">這頁要回答：TCP 怎麼發現封包掉了？發現後怎麼調整 cwnd？</p>
 <div class="toggle"><button data-mode="timeout" class="on">逾時（Timeout）</button><button data-mode="dupack">3 個重複 ACK</button></div>
 <svg id="cwnd-chart" viewBox="0 0 640 260" role="img" aria-label="cwnd 隨 RTT 變化的模擬圖"></svg>
 <p id="cwnd-caption" class="caption"></p>
+<div class="grid2 tight">
+<div class="box warn-box"><b>逾時</b>：等到重傳計時器到期才發現。cwnd 降為 1 個區段，重新慢啟動。</div>
+<div class="box"><b>3 個重複 ACK</b>：後面的封包有到，接收端一直要同一個序號。只把 cwnd 降到 ssthresh。</div>
+</div>
 <details><summary>詳細補充：模擬規則</summary>
 <p>本圖依 RFC 5681 計算：slow start 每個 RTT 翻倍、壅塞避免每個 RTT 加 1；遺失時 ssthresh 設為在途量的一半。逾時後 cwnd 降為 1 個區段重新慢啟動；收到 3 個重複 ACK 則重傳並從 ssthresh 繼續（省略 fast recovery 期間短暫的視窗膨脹）。網路容量與遺失時間點是示意。</p>
 <p class="cite">出處：[RFC 5681 §3.1]、[RFC 5681 §3.2]</p>
@@ -127,6 +162,7 @@ footer a{color:var(--muted)}
 </section>
 <section data-src="wiki/concepts/fast-retransmit-fast-recovery.md">
 <h2>快速重傳與快速恢復</h2>
+<p class="q">這頁要回答：收到重複 ACK 時，為什麼不用退回慢啟動？</p>
 <svg id="state-diagram" viewBox="0 -8 640 268" role="img" aria-label="TCP 壅塞控制狀態轉移圖">
 <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
 <g class="node"><rect x="10" y="95" width="130" height="56" rx="10"/><text x="75" y="129">慢啟動</text></g>
@@ -139,60 +175,80 @@ footer a{color:var(--muted)}
 <path class="edge" d="M545,151 C545,210 340,210 340,151" marker-end="url(#arr)"/><text class="lbl" x="442" y="214">新 ACK：cwnd = ssthresh</text>
 <path class="edge" d="M75,151 C75,255 585,255 585,151" marker-end="url(#arr)" opacity="0.6"/><text class="lbl" x="330" y="246">3 個重複 ACK</text>
 </svg>
-<p>收到重複 ACK，代表後面的封包已經抵達，ACK 時脈還在運作，所以不必退回 slow start。</p>
-<details><summary>詳細補充：fast recovery 的步驟</summary>
-<p>收到第 3 個重複 ACK：重傳遺失的區段，ssthresh 設為在途量的一半，cwnd 設為 ssthresh + 3*SMSS（暫時加上已離開網路的 3 個區段）。之後每多一個重複 ACK，cwnd 再加 1 個 SMSS。收到確認新資料的 ACK 時，cwnd 縮回 ssthresh。</p>
+<ol class="steps compact">
+<li><b>快速重傳</b>：收到第 3 個重複 ACK，不等計時器，立刻重傳遺失的區段。</li>
+<li><b>快速恢復</b>：ssthresh 降為在途量的一半，cwnd 從 ssthresh 附近繼續，不退回 1。</li>
+<li><b>結束</b>：收到確認新資料的 ACK，cwnd 縮回 ssthresh，回到壅塞避免。</li>
+</ol>
+<div class="box key-box">一句話記住：重複 ACK 代表後面的封包有到、ACK 時脈還在，所以不必從頭開始。</div>
+<details><summary>詳細補充：fast recovery 的細節</summary>
+<p>收到第 3 個重複 ACK 時，cwnd 先設為 ssthresh + 3*SMSS（暫時加上已離開網路的 3 個區段），之後每多一個重複 ACK，cwnd 再加 1 個 SMSS；收到確認新資料的 ACK 時才縮回 ssthresh。</p>
 <p class="cite">出處：[RFC 5681 §3.2]</p>
 </details>
 </section>
 <section data-src="wiki/algorithms/new-reno.md">
 <h2>Reno 的弱點與 NewReno</h2>
-<ul>
-<li><b>Reno</b>：同一個視窗掉了好幾個封包時，常常逾時，或重複縮小視窗</li>
-<li><b>NewReno</b>：收到只確認一部分的 partial ACK，就立刻補送下一個，留在 fast recovery 直到全部確認</li>
-</ul>
+<p class="q">這頁要回答：同一批資料掉了好幾個封包，會發生什麼事？</p>
+<div class="grid2">
+<div class="box warn-box"><h3>Reno 的問題</h3><p>每次快速重傳只補一個區段，收到確認新資料的 ACK 就結束快速恢復。同一視窗掉好幾個時，常常逾時或重複縮小視窗。</p></div>
+<div class="box"><h3>NewReno 的改良</h3><p>補送後回來的 ACK 如果只確認了一部分（partial ACK），代表後面還有洞，就立刻補送下一個，留在快速恢復，直到全部確認才結束。</p></div>
+</div>
+<p>NewReno 用變數 recover 記住進入快速恢復時送到哪裡。</p>
+<div class="box key-box">一句話記住：partial ACK 是「還有洞」的提示，NewReno 會把洞補完再離開。</div>
 <details><summary>詳細補充：Reno 這個名字從哪來</summary>
-<p>RFC 5681 本身沒有使用「Reno」。RFC 6582 說明，RFC 5681 fast recovery 的典型實作最早出現在 1990 年的 BSD Reno 版本，因此被稱為 Reno。常見的「Tahoe」在本教材的文獻中沒有定義，所以不使用。</p>
-<p class="cite">出處：[RFC 6582 §1]、[RFC 6582 §3.2]、[RFC 5681 §3.2]</p>
+<p>RFC 5681 本身沒有使用「Reno」。RFC 6582 說明，RFC 5681 fast recovery 的典型實作最早出現在 1990 年的 BSD Reno 版本，因此被稱為 Reno。常見的「Tahoe」在本教材的文獻中沒有定義，所以不使用。沒有 SACK 時，RFC 6582 建議實作 NewReno 而不是 Reno。</p>
+<p class="cite">出處：[RFC 6582 §1]、[RFC 6582 §2]、[RFC 6582 §3.2]、[RFC 6582 §8]、[RFC 5681 §3.2]</p>
 </details>
 </section>
 <section data-src="wiki/sources/rfc6928.md">
 <h2>IW10：把起跑點拉高</h2>
-<p class="tag">Experimental，不是正式標準</p>
+<p class="q">這頁要回答：初始視窗只有 2～4 個區段，夠用嗎？</p>
+<p class="tag">Experimental（實驗性），不是正式標準</p>
 <ul>
-<li>初始視窗從 2～4 提高到 10 個區段</li>
-<li>網頁多是短連線，還沒離開慢啟動就結束了</li>
-<li>超過 4 KB 的資料，最多省下 4 個 RTT</li>
+<li><b>問題</b>：網頁物件變大，很多連線還沒離開慢啟動就結束，小的起點成了延遲瓶頸。</li>
+<li><b>提案</b>：RFC 6928 提議把初始視窗上限提高到 10 個區段（最多 14600 位元組）。</li>
+<li><b>效益</b>：超過 4 KB 的資料，最多省下 4 個 RTT；Google 實驗中平均搜尋延遲改善 11.7% 與 8.7%。</li>
+<li><b>代價</b>：重傳率小幅上升 0.3% 與 0.7%。</li>
 </ul>
-<details><summary>詳細補充：代價與限制</summary>
-<p>Google 的大規模實驗中，平均搜尋延遲改善 11.7%（AvgDC）與 8.7%（SlowDC），重傳率增加 0.3% 與 0.7%。RFC 6928 規定：沒有監控能力的系統不得預設開啟。</p>
-<p class="cite">出處：[RFC 6928 §1]、[RFC 6928 §5.1]、[RFC 6928 §10.1]、[RFC 6928 §10.2]、[RFC 6928 §12]</p>
+<div class="box key-box">一句話記住：IW10 讓短連線更快，但它是實驗性提案，沒有監控能力的系統不得預設開啟。</div>
+<details><summary>詳細補充：和正式標準的差異</summary>
+<p>RFC 6928 的標頭沒有 Updates 欄位，所以本 wiki 把它和 RFC 5681 的差異（IW 上限、SYN 遺失後是否重設初始視窗）記錄為歧異，而不是正式演進。11.7% 與 8.7% 分別是 AvgDC 與 SlowDC 兩個資料中心的結果。</p>
+<p class="cite">出處：[RFC 6928 §1]、[RFC 6928 §2]、[RFC 6928 §4]、[RFC 6928 §5.1]、[RFC 6928 §10.1]、[RFC 6928 §10.2]、[RFC 6928 §12]</p>
 </details>
 </section>
-<section data-src="wiki/algorithms/cubic.md">
+<section data-src="wiki/algorithms/cubic.md wiki/sources/rfc9438.md">
 <h2>CUBIC：用時間畫出的三次曲線</h2>
+<p class="q">這頁要回答：在高速、長距離的網路裡，Reno 哪裡不夠好？</p>
 <svg id="cubic-chart" viewBox="0 0 640 240" role="img" aria-label="CUBIC 視窗增長曲線"></svg>
-<p>Reno 每個 RTT 只加 1，在高速長距離網路回升太慢。CUBIC 先快速回升，接近上次壅塞點 W_max 時放慢，超過後再加速探測。遇到壅塞乘 0.7，Reno 是 0.5。</p>
+<ul class="compact">
+<li><b>Reno 的問題</b>：壅塞後每個 RTT 只加 1，大頻寬網路要很久才能回到原本速度。</li>
+<li><b>CUBIC 的做法</b>：記住上次壅塞時的視窗 W_max，先快速長回去、接近 W_max 時放慢（凹），超過後再加速探測（凸）。</li>
+<li><b>減少較溫和</b>：遇到壅塞乘 0.7，Reno 是乘 0.5。</li>
+</ul>
+<div class="box key-box">一句話記住：CUBIC 是目前 Linux、Windows 與 Apple 的預設演算法。</div>
 <details><summary>詳細補充：公式與參數</summary>
-<p>W_cubic(t) = C·(t − K)³ + W_max，C = 0.4。K 是視窗長回 W_max 所需的時間。CUBIC 已是 Linux、Windows 與 Apple 的預設演算法，並以 RFC 9438 正式更新 RFC 5681。</p>
-<p class="cite">出處：[RFC 9438 §1]、[RFC 9438 §3.4]、[RFC 9438 §4.2]、[RFC 9438 §5.1]</p>
+<p>W_cubic(t) = C·(t − K)³ + W_max，C = 0.4。t 是距離上次壅塞的時間，K 是長回 W_max 所需的時間。因為視窗依「時間」而不是「ACK 次數」增長，不同 RTT 的連線也能較公平地分享頻寬。RFC 9438 正式更新了 RFC 5681。</p>
+<p class="cite">出處：[RFC 9438 §1]、[RFC 9438 §3.1]、[RFC 9438 §3.3]、[RFC 9438 §3.4]、[RFC 9438 §4.2]、[RFC 9438 §5.1]</p>
 </details>
 </section>
 <section data-src="wiki/algorithms/bbr.md">
 <h2>BBR：遺失不等於壅塞</h2>
-<p>BBR 的作者群（包括 1988 年的 Jacobson）認為，把遺失當成壅塞是早期技術限制下的選擇。BBR 改量兩個數：</p>
-<ul>
-<li><b>BtlBw</b> 瓶頸頻寬：水管最窄處的粗細</li>
-<li><b>RTprop</b> 往返傳播時間：水管的長度</li>
-</ul>
-<p class="key">在途量等於 BDP 時，吞吐量最高、延遲最低。</p>
-<details><summary>詳細補充：部署結果</summary>
-<p>loss-based 演算法在大緩衝區會造成 bufferbloat，在小緩衝區會把遺失誤判為壅塞。Google B4 的一條美歐路徑上，BBR 達到 2 Gbps，CUBIC 只有 15 Mbps。</p>
-<p class="cite">出處：[BBR 2017, "Congestion-Based Congestion Control", p.58]、[BBR 2017, "Congestion and Bottlenecks", p.58]、[BBR 2017, "Characterizing the Bottleneck", p.60]、[BBR 2017, "Google B4 WAN Deployment Experience", p.64]</p>
+<p class="q">這頁要回答：用「封包遺失」判斷壅塞，一定對嗎？</p>
+<p>BBR 的作者群（包括 1988 年的 Jacobson）認為，把遺失當成壅塞是早期技術限制下的選擇：緩衝區大時，loss-based 演算法會把它塞滿；緩衝區小時，又會把遺失誤判成壅塞。</p>
+<div class="grid2">
+<div class="box"><h3>BtlBw 瓶頸頻寬</h3><p>路徑最窄處能通過的速率，像水管最細處的粗細。</p></div>
+<div class="box"><h3>RTprop 往返傳播時間</h3><p>沒有排隊時的往返時間，像水管的長度。</p></div>
+</div>
+<p>BBR 持續量測這兩個數，讓在途資料量維持在 BDP（BtlBw × RTprop）附近。</p>
+<div class="box key-box">一句話記住：在途量等於 BDP 時，吞吐量最高、延遲最低。</div>
+<details><summary>詳細補充：量測方法與部署結果</summary>
+<p>這兩個數無法同時量到：要找出頻寬得把管線灌滿，但灌滿產生的佇列會遮住真正的傳播時間。所以 BBR 會週期性多送一點（1.25 倍）探測頻寬，並定期把在途量降到 4 個封包量測最小 RTT。Google B4 的一條美歐路徑上，BBR 達到 2 Gbps，CUBIC 只有 15 Mbps。</p>
+<p class="cite">出處：[BBR 2017, "Congestion-Based Congestion Control", p.58]、[BBR 2017, "Congestion and Bottlenecks", p.58]、[BBR 2017, "Characterizing the Bottleneck", p.60]、[BBR 2017, "Characterizing the Bottleneck", p.61]、[BBR 2017, "Matching the Packet Flow to the Delivery Path", p.63]、[BBR 2017, "Google B4 WAN Deployment Experience", p.64]</p>
 </details>
 </section>
 <section data-src="wiki/timeline.md wiki/conflicts.md">
 <h2>總整理：一路演進</h2>
+<div class="grid2">
 <ol class="timeline">
 <li><b>1988</b> Jacobson：慢啟動、AIMD</li>
 <li><b>2009</b> RFC 5681：現行標準（取代 RFC 2581）</li>
@@ -201,8 +257,16 @@ footer a{color:var(--muted)}
 <li><b>2017</b> BBR：量測取代遺失</li>
 <li><b>2023</b> RFC 9438：CUBIC 成為標準</li>
 </ol>
-<details><summary>詳細補充：常見誤解</summary>
-<p>一、慢啟動不慢，是指數成長。二、rwnd 和 cwnd 保護的對象不同。三、IW10 是實驗性提案，不是正式標準。四、封包遺失不一定代表壅塞，這正是 BBR 的出發點。文獻之間說法不同的地方，整理在 wiki 的歧異對照表。</p>
+<div class="box"><h3>常見誤解</h3><ul>
+<li>慢啟動不慢，是指數成長。</li>
+<li>rwnd 和 cwnd 保護的對象不同。</li>
+<li>IW10 是實驗性提案，不是正式標準。</li>
+<li>封包遺失不一定代表壅塞。</li>
+</ul></div>
+</div>
+<div class="box key-box">一路看下來：每一代都在解決前一代的痛點，從「別把網路塞爆」到「用滿頻寬又不排隊」。</div>
+<details><summary>詳細補充：文獻之間的歧異</summary>
+<p>不同文獻說法不一致的地方（例如初始視窗大小、ssthresh 的計算基準、乘法減少係數 0.5 與 0.7），都整理在 wiki 的歧異對照表。</p>
 <p class="cite">出處：[Jacobson 1988, §Intro, p.2]、[RFC 5681 §1]、[RFC 6582 §1]、[RFC 6928 §1]、[RFC 9438 §1]、[BBR 2017, "Congestion-Based Congestion Control", p.58]</p>
 </details>
 </section>

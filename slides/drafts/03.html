@@ -1,13 +1,16 @@
 <section data-src="wiki/concepts/rwnd-vs-cwnd.md">
 <h2>兩個視窗：rwnd 與 cwnd</h2>
+<p class="q">這頁要回答：傳送端一次可以送多少資料？</p>
+<p>傳送端同時受到兩個限制，它們保護的對象不同：</p>
 <table class="cmp">
 <tr><th></th><th>rwnd 接收視窗</th><th>cwnd 壅塞視窗</th></tr>
-<tr><td>保護誰</td><td>接收端的緩衝區</td><td>網路</td></tr>
-<tr><td>誰決定</td><td>接收端通告</td><td>傳送端自己調整</td></tr>
+<tr><td>保護誰</td><td>接收端的緩衝區</td><td>路徑上的網路</td></tr>
+<tr><td>誰決定</td><td>接收端通告：「我還裝得下這麼多」</td><td>傳送端自己估計：「網路大概還塞得下這麼多」</td></tr>
 </table>
-<p class="key">實際能送的量 = min(cwnd, rwnd)</p>
+<p>兩個限制都要遵守，所以實際能送的量取兩者中比較小的那個。就算接收端很空，網路塞了，還是得照 cwnd 送。</p>
+<div class="box key-box">一句話記住：實際能送的量 = min(cwnd, rwnd)。整份教材的主角是 cwnd。</div>
 <details><summary>詳細補充：名詞說明</summary>
-<p>這份教材的主角是 cwnd。常聽到的「流量控制（Flow Control）vs. 壅塞控制（Congestion Control）」是教學上的慣用說法，原始文獻並沒有用這組名稱比較兩個視窗。</p>
+<p>常聽到的「流量控制（Flow Control）vs. 壅塞控制（Congestion Control）」是教學上的慣用說法，本教材依據的原始文獻並沒有用這組名稱比較兩個視窗。</p>
 <p class="cite">出處：[RFC 5681 §2]、[RFC 5681 §3.1]、[Jacobson 1988, §1, p.4]</p>
 </details>
 </section>

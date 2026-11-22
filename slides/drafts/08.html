@@ -1,9 +1,15 @@
 <section data-src="wiki/concepts/fast-retransmit-fast-recovery.md">
 <h2>快速重傳與快速恢復</h2>
+<p class="q">這頁要回答：收到重複 ACK 時，為什麼不用退回慢啟動？</p>
 <svg id="state-diagram" viewBox="0 0 640 250" role="img" aria-label="TCP 壅塞控制狀態轉移圖"></svg>
-<p>收到重複 ACK，代表後面的封包已經抵達，ACK 時脈還在運作，所以不必退回 slow start。</p>
-<details><summary>詳細補充：fast recovery 的步驟</summary>
-<p>收到第 3 個重複 ACK：重傳遺失的區段，ssthresh 設為在途量的一半，cwnd 設為 ssthresh + 3*SMSS（暫時加上已離開網路的 3 個區段）。之後每多一個重複 ACK，cwnd 再加 1 個 SMSS。收到確認新資料的 ACK 時，cwnd 縮回 ssthresh。</p>
+<ol class="steps compact">
+<li><b>快速重傳</b>：收到第 3 個重複 ACK，不等計時器，立刻重傳遺失的區段。</li>
+<li><b>快速恢復</b>：ssthresh 降為在途量的一半，cwnd 從 ssthresh 附近繼續，不退回 1。</li>
+<li><b>結束</b>：收到確認新資料的 ACK，cwnd 縮回 ssthresh，回到壅塞避免。</li>
+</ol>
+<div class="box key-box">一句話記住：重複 ACK 代表後面的封包有到、ACK 時脈還在，所以不必從頭開始。</div>
+<details><summary>詳細補充：fast recovery 的細節</summary>
+<p>收到第 3 個重複 ACK 時，cwnd 先設為 ssthresh + 3*SMSS（暫時加上已離開網路的 3 個區段），之後每多一個重複 ACK，cwnd 再加 1 個 SMSS；收到確認新資料的 ACK 時才縮回 ssthresh。</p>
 <p class="cite">出處：[RFC 5681 §3.2]</p>
 </details>
 </section>

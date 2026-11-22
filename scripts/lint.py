@@ -177,6 +177,8 @@ def check_citations(reporter, wiki_files):
 # [k] 出處章節存在性：只檢查格式不夠，還要確認被引用的章節真的存在於 raw/ 原文
 JACOBSON_VALID_SECTIONS = {"Intro", "1", "2", "3", "4", "A", "B", "C", "D"}  # 依 raw/jacobson1988.txt 實際章節結構
 JACOBSON_MAX_PAGE = 25
+# 簡報每頁正文字數上限（原為 100；2026-11-22 依使用者回饋「初學者看不懂、頁面太空」放寬為 180）
+SLIDE_WORD_LIMIT = 180
 BBR_FIRST_PAGE, BBR_LAST_PAGE = 58, 66  # Communications of the ACM 60(2), pp. 58-66
 
 def load_rfc_sections(rfc_num):
@@ -490,15 +492,15 @@ def check_slides(reporter):
                     reporter.add_error("簡報章節", f"第 {idx} 頁 data-src 指定之 Wiki 頁面不存在: `{src}`", file_path=SLIDES_PATH)
 
         no_script = re.sub(r'<(script|style)\b[^>]*>.*?</\1>', '', sec_content, flags=re.DOTALL | re.IGNORECASE)
-        # 3. 字數上限 100 字：排除 <details> 補充區塊與 <svg> 圖表標籤
+        # 3. 字數上限：排除 <details> 補充區塊與 <svg> 圖表標籤
         body = re.sub(r'<details\b[^>]*>.*?</details>', '', no_script, flags=re.DOTALL | re.IGNORECASE)
         body = re.sub(r'<svg\b[^>]*>.*?</svg>', '', body, flags=re.DOTALL | re.IGNORECASE)
         plain_text = re.sub(r'<[^>]+>', ' ', body)
         chinese_chars = len(re.findall(r'[\u4e00-\u9fff]', plain_text))
         english_words = len(re.findall(r'[a-zA-Z0-9_]+', plain_text))
         total_words = chinese_chars + english_words
-        if total_words > 100:
-            reporter.add_error("簡報字數", f"第 {idx} 頁正文字數 ({total_words} 字) 超過 100 字上限", file_path=SLIDES_PATH)
+        if total_words > SLIDE_WORD_LIMIT:
+            reporter.add_error("簡報字數", f"第 {idx} 頁正文字數 ({total_words} 字) 超過 {SLIDE_WORD_LIMIT} 字上限", file_path=SLIDES_PATH)
 
         # 4. 數字查核：讀者看得到的文字（含圖表標籤，不含 <details> 與出處標籤），HTML 屬性中的數字不算
         visible = re.sub(r'<details\b[^>]*>.*?</details>', '', no_script, flags=re.DOTALL | re.IGNORECASE)

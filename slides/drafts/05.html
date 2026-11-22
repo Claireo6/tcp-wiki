@@ -1,13 +1,15 @@
 <section data-src="wiki/concepts/slow-start.md">
 <h2>慢啟動：從小開始、每輪翻倍</h2>
-<ul>
-<li>起點很小：RFC 5681 規定 2～4 個區段</li>
-<li>每收到一個 ACK，cwnd 加 1，所以每個 RTT 翻倍</li>
-<li>cwnd 超過門檻 ssthresh，改用壅塞避免</li>
-</ul>
-<p class="key">名字叫「慢」，其實是指數成長。</p>
-<details><summary>詳細補充：初始值的演進</summary>
-<p>1988 年的設計從 1 個封包開始；RFC 5681 依區段大小允許 2 到 4 個區段；RFC 6928 實驗性地提議 10 個區段（見後面 IW10 那頁）。ssthresh 一開始要設得很大，讓網路狀況決定何時停止翻倍。</p>
+<p class="q">這頁要回答：連線剛開始，cwnd 怎麼長大？</p>
+<ol class="steps">
+<li><b>起點很小</b>：cwnd 的初始值（IW）依 RFC 5681 是 2～4 個區段，因為一開始不知道網路有多大。</li>
+<li><b>每個 ACK 加 1</b>：每收到一個確認新資料的 ACK，cwnd 加 1 個區段。</li>
+<li><b>所以每個 RTT 翻倍</b>：這一輪送出幾個，下一輪就回來幾個 ACK，cwnd 就變成兩倍（1、2、4……）。</li>
+<li><b>碰到門檻就換模式</b>：cwnd 超過門檻 ssthresh 後，改用壅塞避免。</li>
+</ol>
+<div class="box key-box">一句話記住：名字叫「慢」，其實是指數成長。</div>
+<details><summary>詳細補充：初始值與門檻</summary>
+<p>1988 年的設計從 1 個封包開始；RFC 5681 依區段大小允許 2 到 4 個區段；RFC 6928 實驗性地提議 10 個區段（見 IW10 那頁）。ssthresh 一開始要設得很大，讓網路狀況決定何時停止翻倍。RTT（往返時間）是封包送出到收到 ACK 的時間。</p>
 <p class="cite">出處：[Jacobson 1988, §1, p.4]、[RFC 5681 §3.1]</p>
 </details>
 </section>

@@ -45,7 +45,7 @@ def main():
             page.screenshot(path=shot)
             ok = info["sh"] <= info["ch"] + 1
             if not ok:
-                errors.append(f"第 {i} 頁內容超出投影片框（scrollHeight {info['sh']} > clientHeight {info['ch']}）")
+                errors.append(f"第 {i} 頁內容超出投影片框（scrollHeight {info['sh']} > clientHeight {info['ch']}），需要捲動才看得完")
             for k, cnt in enumerate(info["svgs"]):
                 if cnt == 0:
                     errors.append(f"第 {i} 頁第 {k + 1} 個圖表是空的")

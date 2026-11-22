@@ -1,9 +1,12 @@
 <section data-src="wiki/sources/jacobson1988.md">
 <h2>1986：網路真的塞爆了</h2>
+<p class="q">這頁要回答：為什麼 TCP 需要壅塞控制？</p>
 <div class="bigstat"><span>32 Kbps</span><span class="arrow">→</span><span class="bad">40 bps</span></div>
-<p>1986 年 10 月，LBL 到 UC Berkeley 的吞吐量掉到原本的千分之一。Jacobson 發現問題出在 TCP 的實作，於是在 4BSD TCP 加入 7 個新演算法。</p>
-<details><summary>詳細補充：7 個演算法</summary>
+<p>1986 年 10 月，網際網路發生「壅塞崩潰（Congestion Collapse）」：LBL 到 UC Berkeley 的吞吐量掉到原本的千分之一。</p>
+<p>Jacobson 研究後發現，問題不在 TCP 協定本身，而在實作面對壅塞時的錯誤行為。例如重傳計時器設得太短，會把排隊延遲誤當成遺失，重送一堆其實沒丟的封包，讓網路更塞。</p>
+<div class="box key-box">一句話記住：傳送端如果不懂得「網路塞了就放慢」，大家一起塞到動不了。</div>
+<details><summary>詳細補充：Jacobson 加入的 7 個演算法</summary>
 <p>(i) 往返時間變異量估算、(ii) 指數型重傳計時器退避、(iii) 慢啟動、(iv) 更主動的接收端確認策略、(v) 壅塞時動態調整視窗、(vi) Karn 箝位重傳退避、(vii) 快速重傳。論文只詳述 (i) 至 (v)，快速重傳留待之後的 RFC 說明。</p>
-<p class="cite">出處：[Jacobson 1988, §Intro, p.1]、[Jacobson 1988, §Intro, p.2]</p>
+<p class="cite">出處：[Jacobson 1988, §Intro, p.1]、[Jacobson 1988, §Intro, p.2]、[Jacobson 1988, §2, p.7]</p>
 </details>
 </section>

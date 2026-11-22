@@ -1,5 +1,6 @@
 <section data-src="wiki/timeline.md wiki/conflicts.md">
 <h2>總整理：一路演進</h2>
+<div class="grid2">
 <ol class="timeline">
 <li><b>1988</b> Jacobson：慢啟動、AIMD</li>
 <li><b>2009</b> RFC 5681：現行標準（取代 RFC 2581）</li>
@@ -8,8 +9,16 @@
 <li><b>2017</b> BBR：量測取代遺失</li>
 <li><b>2023</b> RFC 9438：CUBIC 成為標準</li>
 </ol>
-<details><summary>詳細補充：常見誤解</summary>
-<p>一、慢啟動不慢，是指數成長。二、rwnd 和 cwnd 保護的對象不同。三、IW10 是實驗性提案，不是正式標準。四、封包遺失不一定代表壅塞，這正是 BBR 的出發點。文獻之間說法不同的地方，整理在 wiki 的歧異對照表。</p>
+<div class="box"><h3>常見誤解</h3><ul>
+<li>慢啟動不慢，是指數成長。</li>
+<li>rwnd 和 cwnd 保護的對象不同。</li>
+<li>IW10 是實驗性提案，不是正式標準。</li>
+<li>封包遺失不一定代表壅塞。</li>
+</ul></div>
+</div>
+<div class="box key-box">一路看下來：每一代都在解決前一代的痛點，從「別把網路塞爆」到「用滿頻寬又不排隊」。</div>
+<details><summary>詳細補充：文獻之間的歧異</summary>
+<p>不同文獻說法不一致的地方（例如初始視窗大小、ssthresh 的計算基準、乘法減少係數 0.5 與 0.7），都整理在 wiki 的歧異對照表。</p>
 <p class="cite">出處：[Jacobson 1988, §Intro, p.2]、[RFC 5681 §1]、[RFC 6582 §1]、[RFC 6928 §1]、[RFC 9438 §1]、[BBR 2017, "Congestion-Based Congestion Control", p.58]</p>
 </details>
 </section>

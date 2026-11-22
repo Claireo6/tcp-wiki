@@ -1,11 +1,14 @@
 <section data-src="wiki/algorithms/new-reno.md">
 <h2>Reno 的弱點與 NewReno</h2>
-<ul>
-<li><b>Reno</b>：同一個視窗掉了好幾個封包時，常常逾時，或重複縮小視窗</li>
-<li><b>NewReno</b>：收到只確認一部分的 partial ACK，就立刻補送下一個，留在 fast recovery 直到全部確認</li>
-</ul>
+<p class="q">這頁要回答：同一批資料掉了好幾個封包，會發生什麼事？</p>
+<div class="grid2">
+<div class="box warn-box"><h3>Reno 的問題</h3><p>每次快速重傳只補一個區段，收到確認新資料的 ACK 就結束快速恢復。同一視窗掉好幾個時，常常逾時或重複縮小視窗。</p></div>
+<div class="box"><h3>NewReno 的改良</h3><p>補送後回來的 ACK 如果只確認了一部分（partial ACK），代表後面還有洞，就立刻補送下一個，留在快速恢復，直到全部確認才結束。</p></div>
+</div>
+<p>NewReno 用變數 recover 記住進入快速恢復時送到哪裡。</p>
+<div class="box key-box">一句話記住：partial ACK 是「還有洞」的提示，NewReno 會把洞補完再離開。</div>
 <details><summary>詳細補充：Reno 這個名字從哪來</summary>
-<p>RFC 5681 本身沒有使用「Reno」。RFC 6582 說明，RFC 5681 fast recovery 的典型實作最早出現在 1990 年的 BSD Reno 版本，因此被稱為 Reno。常見的「Tahoe」在本教材的文獻中沒有定義，所以不使用。</p>
-<p class="cite">出處：[RFC 6582 §1]、[RFC 6582 §3.2]、[RFC 5681 §3.2]</p>
+<p>RFC 5681 本身沒有使用「Reno」。RFC 6582 說明，RFC 5681 fast recovery 的典型實作最早出現在 1990 年的 BSD Reno 版本，因此被稱為 Reno。常見的「Tahoe」在本教材的文獻中沒有定義，所以不使用。沒有 SACK 時，RFC 6582 建議實作 NewReno 而不是 Reno。</p>
+<p class="cite">出處：[RFC 6582 §1]、[RFC 6582 §2]、[RFC 6582 §3.2]、[RFC 6582 §8]、[RFC 5681 §3.2]</p>
 </details>
 </section>

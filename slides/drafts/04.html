@@ -1,10 +1,15 @@
 <section data-src="wiki/concepts/slow-start.md">
 <h2>封包守恆與 ACK 時脈</h2>
-<p>網路穩定時，要等舊封包離開，才放新封包進去。傳送端把收到的 ACK 當成時脈：收到一個，就送出一個。</p>
-<p class="key">問題：連線剛開始還沒有 ACK，時脈要怎麼啟動？</p>
-<p>答案是慢啟動（Slow Start）。</p>
-<details><summary>詳細補充：Self-clocking</summary>
-<p>Jacobson 把這個原則稱為封包守恆（conservation of packets）。用 ACK 當時脈，送出節奏會自然對齊路徑上最慢的鏈路。</p>
+<p class="q">這頁要回答：傳送端怎麼決定「什麼時候送下一個封包」？</p>
+<ol class="steps">
+<li><b>封包守恆</b>：網路穩定時，要等一個舊封包離開，才放一個新封包進去。</li>
+<li><b>ACK 就是證據</b>：收到一個 ACK，代表有一個封包已經離開網路、抵達接收端。</li>
+<li><b>ACK 時脈（self-clocking）</b>：收到一個 ACK 就送出一個新封包，送出的節奏自然會對齊路徑上最慢的那段鏈路。</li>
+</ol>
+<p>但連線剛開始時還沒有任何 ACK，時脈根本啟動不了。解決這個問題的方法，就是下一頁的慢啟動（Slow Start）。</p>
+<div class="box key-box">一句話記住：TCP 用「收到的 ACK」當節拍器。</div>
+<details><summary>詳細補充：封包守恆會在哪裡失效</summary>
+<p>Jacobson 指出只有三種情況：連線還沒達到平衡；舊封包還沒離開就送出新封包；路徑資源不足，根本達不到平衡。慢啟動處理的是第一種。</p>
 <p class="cite">出處：[Jacobson 1988, §Intro, p.2]、[Jacobson 1988, §1, p.3]</p>
 </details>
 </section>

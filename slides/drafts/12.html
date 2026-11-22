@@ -1,13 +1,15 @@
 <section data-src="wiki/algorithms/bbr.md">
 <h2>BBR：遺失不等於壅塞</h2>
-<p>BBR 的作者群（包括 1988 年的 Jacobson）認為，把遺失當成壅塞是早期技術限制下的選擇。BBR 改量兩個數：</p>
-<ul>
-<li><b>BtlBw</b> 瓶頸頻寬：水管最窄處的粗細</li>
-<li><b>RTprop</b> 往返傳播時間：水管的長度</li>
-</ul>
-<p class="key">在途量等於 BDP 時，吞吐量最高、延遲最低。</p>
-<details><summary>詳細補充：部署結果</summary>
-<p>loss-based 演算法在大緩衝區會造成 bufferbloat，在小緩衝區會把遺失誤判為壅塞。Google B4 的一條美歐路徑上，BBR 達到 2 Gbps，CUBIC 只有 15 Mbps。</p>
-<p class="cite">出處：[BBR 2017, "Congestion-Based Congestion Control", p.58]、[BBR 2017, "Congestion and Bottlenecks", p.58]、[BBR 2017, "Characterizing the Bottleneck", p.60]、[BBR 2017, "Google B4 WAN Deployment Experience", p.64]</p>
+<p class="q">這頁要回答：用「封包遺失」判斷壅塞，一定對嗎？</p>
+<p>BBR 的作者群（包括 1988 年的 Jacobson）認為，把遺失當成壅塞是早期技術限制下的選擇：緩衝區大時，loss-based 演算法會把它塞滿；緩衝區小時，又會把遺失誤判成壅塞。</p>
+<div class="grid2">
+<div class="box"><h3>BtlBw 瓶頸頻寬</h3><p>路徑最窄處能通過的速率，像水管最細處的粗細。</p></div>
+<div class="box"><h3>RTprop 往返傳播時間</h3><p>沒有排隊時的往返時間，像水管的長度。</p></div>
+</div>
+<p>BBR 持續量測這兩個數，讓在途資料量維持在 BDP（BtlBw × RTprop）附近。</p>
+<div class="box key-box">一句話記住：在途量等於 BDP 時，吞吐量最高、延遲最低。</div>
+<details><summary>詳細補充：量測方法與部署結果</summary>
+<p>這兩個數無法同時量到：要找出頻寬得把管線灌滿，但灌滿產生的佇列會遮住真正的傳播時間。所以 BBR 會週期性多送一點（1.25 倍）探測頻寬，並定期把在途量降到 4 個封包量測最小 RTT。Google B4 的一條美歐路徑上，BBR 達到 2 Gbps，CUBIC 只有 15 Mbps。</p>
+<p class="cite">出處：[BBR 2017, "Congestion-Based Congestion Control", p.58]、[BBR 2017, "Congestion and Bottlenecks", p.58]、[BBR 2017, "Characterizing the Bottleneck", p.60]、[BBR 2017, "Characterizing the Bottleneck", p.61]、[BBR 2017, "Matching the Packet Flow to the Delivery Path", p.63]、[BBR 2017, "Google B4 WAN Deployment Experience", p.64]</p>
 </details>
 </section>
