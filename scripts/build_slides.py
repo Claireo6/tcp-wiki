@@ -103,13 +103,14 @@ __SLIDES__
 </main>
 <footer>
 <button id="prev" aria-label="上一頁">←</button>
-<span><span id="pageno"></span>　內容來源：<a id="srclink" href="#"></a></span>
+<span><span id="pageno"></span>　內容來源：<a id="srclink" href="#" target="_blank" rel="noopener"></a></span>
 <button id="next" aria-label="下一頁">→</button>
 </footer>
 <script id="chart-params" type="application/json">__PARAMS__</script>
 <script>
 (function(){
 const P = JSON.parse(document.getElementById('chart-params').textContent);
+const REPO_BLOB = 'https://github.com/Claireo6/tcp-wiki/blob/main/';  // 連到 GitHub 上排版好的 wiki 頁面
 const v = k => P[k].value;
 const slides = [...document.querySelectorAll('main > section')];
 let cur = 0;
@@ -119,7 +120,7 @@ function show(i){
   document.getElementById('pageno').textContent = (cur+1) + ' / ' + slides.length;
   const src = slides[cur].dataset.src.split(' ');
   const a = document.getElementById('srclink');
-  a.textContent = src.join('、'); a.href = '../' + src[0];
+  a.textContent = src.join('、'); a.href = REPO_BLOB + src[0];
   document.getElementById('progress').style.width = ((cur+1)/slides.length*100) + '%';
   history.replaceState(null,'','#'+(cur+1));
 }
