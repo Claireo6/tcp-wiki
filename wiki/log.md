@@ -4,6 +4,20 @@
 
 ---
 
+## 2026-11-22 - 文獻 5/6 rfc9438（接手者：Claude）
+
+- **步驟 0 來源驗證**：標題 "CUBIC for Fast and Long-Distance Networks"、作者 Xu / Ha / Rhee / Goel / Eggert（編輯）、August 2023、Standards Track、Obsoletes 8312、**Updates 5681**，與原文相符。本 RFC 為新版格式，純文字檔沒有頁碼，因此 sources 頁不記錄頁數。全文搜尋 Tahoe：0 次。
+- **關係判定**：第一份對 RFC 5681 有正式 Updates 關係的文件 → 依 AGENTS.md §5，與 RFC 5681 的差異寫入 `timeline.md` 與概念頁「歷史演進」小節，不列入 conflicts。論文（Jacobson 0.5）與 RFC 9438（0.7）之間沒有正式關係，列入 conflicts 第 6 筆。
+- **引文處理**：RFC 9438 §4.6 原句含有 RFC 自身的參考標記（中括號包住的 RFC5681），會被 lint [c] 誤判為格式錯誤的出處標籤，因此只截取不含該標記的片段引用。
+- **步驟 3 寫入**：
+  - 新增 `sources/rfc9438.md`、`algorithms/cubic.md`
+  - `concepts/congestion-avoidance.md`、`concepts/slow-start.md` 各新增「歷史演進」小節（CUBIC 更積極的增長、HyStart++）
+  - `parameters.md` 新增 β_cubic 0.7（§4.6，取代骨架階段錯標的 §4.1）、C 0.4（§5.1）、1.5 倍目標上限、fast convergence 係數；這些即為簡報 CUBIC 曲線使用的參數
+  - `conflicts.md` 新增第 6 筆；`timeline.md` 新增 2023 列；`glossary.md` 新增 CUBIC、W_max、K、Reno-friendly region、HyStart++；`index.md` 新增 2 頁
+- **步驟 4 Lint**：第 1 輪 PASS（`reports/lint-20261122-204651.md`，19 個檔案，0 項違規）。
+
+---
+
 ## 2026-11-22 - 文獻 4/6 rfc6928（接手者：Claude）
 
 - **步驟 0 來源驗證**：標題 "Increasing TCP's Initial Window"、作者 Chu / Dukkipati / Cheng / Mathis（Google）、April 2013、**Category: Experimental**、無 Obsoletes / Updates、共 24 頁，與原文相符。全文搜尋 Tahoe：0 次。

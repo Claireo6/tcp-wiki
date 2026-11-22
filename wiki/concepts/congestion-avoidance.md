@@ -45,6 +45,18 @@ RFC 5681 特別提醒：應使用 `FlightSize`（已送出未確認的資料量�
 
 這與 Jacobson 1988「記錄當前視窗大小的一半」的寫法不同，記錄於 [歧異與衝突對照表](../conflicts.md)。
 
+## 歷史演進：RFC 9438（CUBIC）正式更新 RFC 5681（2023）
+
+RFC 9438 的標頭載明 `Updates: 5681`，因此這是正式的演進，而不是歧異。
+
+- **為什麼要改**：在頻寬延遲乘積很大的網路中，Reno 在壅塞事件後每個 RTT 只增加約 1 個區段，`cwnd` 增長太慢，導致利用率低 [RFC 9438 §1]。
+- **改了什麼**：CUBIC 在 congestion avoidance 期間可以比 RFC 5681「每個 RTT 不超過 `SMSS`」的限制增加得更快 [RFC 9438 §1]；視窗改依三次函數隨時間增長，並在上次壅塞點附近形成平台 [RFC 9438 §3.1]。
+- **乘法減少也不同**：CUBIC 的係數是 0.7，Reno 是 0.5 [RFC 9438 §3.4]。
+
+> Specifically, CUBIC may increase the congestion window more aggressively than Reno during the congestion avoidance phase. [RFC 9438 §1]
+
+詳見 [CUBIC](../algorithms/cubic.md)。
+
 ## 參考來源
 - [Jacobson 1988, §3, p.8]
 - [Jacobson 1988, §3, p.8-9]
@@ -55,3 +67,6 @@ RFC 5681 特別提醒：應使用 `FlightSize`（已送出未確認的資料量�
 - [Jacobson 1988, §B, p.20]
 - [Jacobson 1988, §D, p.23]
 - [RFC 5681 §3.1]
+- [RFC 9438 §1]
+- [RFC 9438 §3.1]
+- [RFC 9438 §3.4]

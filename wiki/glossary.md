@@ -26,6 +26,11 @@
 | Full ACK | 完全確認 | 確認到 `recover` 為止全部資料的 ACK，NewReno 收到後結束 fast recovery | [RFC 6582 §3.2] |
 | `recover` | 恢復點 | fast recovery 結束前必須被確認的送出序號 | [RFC 6582 §2] |
 | IW10 | 10 區段初始視窗 | RFC 6928 實驗性提案，把初始視窗上限提高到 10 個區段 | [RFC 6928 §1] |
+| CUBIC | CUBIC | 以三次函數取代線性增長的壅塞控制演算法，Linux、Windows、Apple 的預設 | [RFC 9438 §1] |
+| `W_max` | 上次壅塞點視窗 | 上一次壅塞事件發生前的 `cwnd` 大小 | [RFC 9438 §3.1] |
+| `K` | 回到平台時間 | 視窗從目前大小長回 `W_max` 所需的時間 | [RFC 9438 §4.2] |
+| Reno-friendly region | Reno 友善區域 | 三次函數比 Reno 慢時，CUBIC 直接跟隨 Reno 視窗的區域 | [RFC 9438 §4.3] |
+| HyStart++ | HyStart++ | RFC 9438 建議 CUBIC 使用的 slow start 演算法 | [RFC 9438 §4.10] |
 | Conservation of Packets | 封包守恆原則 | 在穩定平衡連線中，舊封包離開網路前不得注入新封包；傳送端以 ACK 作為時脈調節 | [Jacobson 1988, §Intro, p.2] |
 | Self-clocking | 自我時脈 | 傳送端以接收端回傳的 ACK 為觸發信號送出新封包，使傳輸節奏對齊瓶頸鏈路速率 | [Jacobson 1988, §1, p.3] |
 | Exponential Backoff | 指數退避 | 連續逾時重傳時將 RTO 區間每次加倍，以防止壅塞崩潰 | [Jacobson 1988, §2, p.7] |
@@ -55,3 +60,8 @@
 - [RFC 6582 §2]
 - [RFC 6582 §3.2]
 - [RFC 6928 §1]
+- [RFC 9438 §1]
+- [RFC 9438 §3.1]
+- [RFC 9438 §4.2]
+- [RFC 9438 §4.3]
+- [RFC 9438 §4.10]

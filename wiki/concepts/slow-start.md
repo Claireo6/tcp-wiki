@@ -75,6 +75,12 @@ slow start 期間，每個確認新資料的 ACK 最多讓 `cwnd` 增加 `SMSS` 
 
 與 RFC 5681 的差異（IW 上限、SYN 遺失後是否重設 IW）記錄於 [歧異與衝突對照表](../conflicts.md)。
 
+## 歷史演進：CUBIC 建議改用 HyStart++（RFC 9438，2023）
+
+RFC 9438 正式更新 RFC 5681，並建議 CUBIC 的 slow start 使用 HyStart++；HyStart++ 允許 slow start 期間每個 ACK 增加超過 `SMSS`，這是 RFC 5681 原本不允許的 [RFC 9438 §1]。只有在 HyStart++ 不適用的少數情況下，才使用 RFC 5681 的 slow start [RFC 9438 §4.10]。
+
+> In general, CUBIC SHOULD use the HyStart++ slow start algorithm [RFC 9438 §4.10]
+
 ## 參考來源
 - [Jacobson 1988, §Intro, p.2]
 - [Jacobson 1988, §1, p.3]
@@ -89,3 +95,5 @@ slow start 期間，每個確認新資料的 ACK 最多讓 `cwnd` 增加 `SMSS` 
 - [RFC 6928 §5.1]
 - [RFC 6928 §12]
 - [RFC 6928 §5.2]
+- [RFC 9438 §1]
+- [RFC 9438 §4.10]

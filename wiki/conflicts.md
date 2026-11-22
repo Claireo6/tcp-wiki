@@ -2,7 +2,7 @@
 
 本頁面彙整跨文獻間不同標準、非正式演進提案（如 Standards Track vs Experimental）、或學術論文與工程標準間存在分歧之記錄。每一項目均標註兩方或以上之來源出處。
 
-> 本頁只收錄**已 ingest** 文獻之間的歧異。尚未 ingest 的文獻（RFC 9438、BBR）相關項目，會在 ingest 該篇時才加入。
+> 本頁只收錄**已 ingest** 文獻之間的歧異。尚未 ingest 的文獻（BBR）相關項目，會在 ingest 該篇時才加入。
 
 ## 歧異項目彙整
 
@@ -36,6 +36,11 @@
 
 > For this reason, it is RECOMMENDED that implementations refrain from resetting the initial window to 1 segment, unless there have been more than one SYN or SYN/ACK retransmissions or true loss detection has been made. [RFC 6928 §2]
 
+### 6. 乘法減少係數
+- **分歧描述**：1988 論文的乘法減少係數為 0.5，RFC 9438 的 CUBIC 則使用 0.7。CUBIC 與 RFC 5681（Reno）之間是正式的 Updates 關係，已記錄於概念頁的「歷史演進」；此處記錄的是論文與 RFC 9438 之間的差異。
+- **來源一（學術論文）**：0.5 的減少有較充分的理由，而 1 個封包的增加理由較弱 [Jacobson 1988, §D, p.23]。
+- **來源二（Standards Track）**：CUBIC 把乘法減少係數設為 0.7，以在擴展性與收斂速度之間取得平衡；Reno 使用 0.5 [RFC 9438 §3.4]。
+
 ## 參考來源
 - [Jacobson 1988, §1, p.4]
 - [Jacobson 1988, §B, p.20]
@@ -45,3 +50,5 @@
 - [RFC 6582 §3.2]
 - [RFC 6928 §1]
 - [RFC 6928 §2]
+- [Jacobson 1988, §D, p.23]
+- [RFC 9438 §3.4]

@@ -12,9 +12,11 @@
 | 2009 | RFC 5681〈TCP Congestion Control〉 | 以標準文件定義 slow start、congestion avoidance、fast retransmit、fast recovery 四個演算法，並規範 IW、逾時後的 LW、閒置後的 RW 與 ACK 產生方式；自承在同一視窗多個遺失時恢復效率不佳 | Standards Track；Obsoletes 2581（2581 先前取代 2001）[RFC 5681 §1] |
 | 2012 | RFC 6582〈The NewReno Modification to TCP's Fast Recovery Algorithm〉 | 解決 Reno 在同一視窗多個封包遺失時常常逾時、或多次縮減視窗的問題：收到 partial ACK 時立即重傳下一個區段並留在 fast recovery | Standards Track；Obsoletes 3782（RFC 5681 §4.3 推薦的 RFC 3782 即為其前一版）[RFC 6582 §1] |
 | 2013 | RFC 6928〈Increasing TCP's Initial Window〉 | 網頁物件變大、多數短連線在離開 slow start 前就結束，小的初始視窗成為延遲瓶頸；提議把 IW 上限提高到 10 個區段 | **Experimental**；標頭無 Obsoletes / Updates [RFC 6928 §1] |
+| 2023 | RFC 9438〈CUBIC for Fast and Long-Distance Networks〉 | Reno 在高頻寬、長距離（高 BDP）網路中壅塞後 `cwnd` 增長太慢；改以三次函數隨時間增長，乘法減少係數改為 0.7；已是 Linux、Windows、Apple 的預設演算法 | Standards Track；Obsoletes 8312；**Updates 5681**（正式演進）[RFC 9438 §1] |
 
 ## 參考來源
 - [Jacobson 1988, §Intro, p.2]
 - [RFC 5681 §1]
 - [RFC 6582 §1]
 - [RFC 6928 §1]
+- [RFC 9438 §1]
