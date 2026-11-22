@@ -55,7 +55,7 @@
    - RFC 文件：`[RFC 5681 §3.1]`（必須包含章節編號，允許附錄字母如 `[RFC 9438 §B]`）。
    - Jacobson 論文：`[Jacobson 1988, §2, p.3]`（章節編號 + 頁碼，引言用 `§Intro`，附錄用 `§A`～`§D`，例如 `[Jacobson 1988, §B, p.20]`）。
      - **頁碼範圍**：一般概念敘述（段落層級）允許使用頁碼範圍格式 `p.X-Y`（例如 `[Jacobson 1988, §A, p.18-20]`）；但數字、公式、英文原句之出處標記**必須為單一頁碼** `p.X`，不得使用範圍格式。
-   - BBR 論文：`[BBR 2016, "小節標題"]`（以原文 Section 標題為準，因 PDF 頁碼不可靠）。
+   - BBR 文章：`[BBR 2017, "小節標題", p.頁碼]`（Communications of the ACM 60(2)，期刊頁碼 58-66；第一個小節之前的開場段落以文章標題 "Congestion-Based Congestion Control" 作為小節名稱）。原先規劃的 `BBR 2016` 已於 ingest 6 來源驗證時更正：raw/ 中的檔案是 2017 年 2 月的期刊版本。
 2. **標記密度**：
    - 數字、公式、狀態轉移條件：**逐句標註**，且出處頁碼必須為單一頁碼。
    - 一般概念敘述：**逐段標註**，允許頁碼範圍。
@@ -84,7 +84,7 @@
 tcp-wiki/
 ├── AGENTS.md                  # 本操作手冊
 ├── .gitignore                 # 包含 raw/*.pdf 等忽略項目
-├── raw/                       # 原始文獻（rfc5681.txt, rfc6582.txt, rfc6928.txt, rfc9438.txt, jacobson1988.pdf, bbr2016.pdf）
+├── raw/                       # 原始文獻（rfc5681.txt, rfc6582.txt, rfc6928.txt, rfc9438.txt, jacobson1988.pdf/.txt, bbr2017.pdf/.txt；PDF 與論文 txt 只存在本機，不進 git）
 ├── scripts/
 │   └── lint.py                # 自動化檢查腳本（僅使用 Python 標準庫）
 ├── reports/                   # lint-YYYYMMDD-HHMMSS.md 與 review-*.md 報告紀錄
@@ -115,7 +115,7 @@ tcp-wiki/
 3. `raw/rfc6582.txt`
 4. `raw/rfc6928.txt`
 5. `raw/rfc9438.txt`
-6. `raw/bbr2016.pdf`
+6. `raw/bbr2017.txt`（Communications of the ACM 2017 年 2 月版本，一律讀 txt）
 
 ### 單篇循環流程（Fixed Cycle）：
 每篇文獻之消化與寫入均必須依序完成以下步驟，不得跳步：
@@ -136,15 +136,16 @@ tcp-wiki/
 ### Wiki 檢查規則：
 - `[a] 孤兒頁面`：所有 `wiki/**/*.md` 均必須列入 `wiki/index.md`。
 - `[b] 內部連結`：所有 `[text](path.md)` 之目標路徑皆必須存在。
-- `[c] 引用格式`：正則驗證 `[RFC \d+ §[\d\.A-Za-z]+]`、`[Jacobson 1988, §[0-9A-Za-z]+, p\.\d+]`（允許頁碼範圍 `p.X-Y` 供段落層級引用）、`[BBR 2016, "標題"]` 格式（RFC 章節允許附錄字母如 `[RFC 9438 §B]`，Jacobson 論文允許 `§Intro` 與附錄字母 `§A`～`§D`，例如 `[Jacobson 1988, §B, p.20]`）。
-- `[d] 原文比對`：針對 RFC 與 Jacobson 1988 引用的英文原句，以下正規化後與 `raw/*.txt` 進行完全一致的子字串比對（嚴禁模糊比對）；PDF 論文之引用留待獨立 AI 審查。正規化步驟：(1) 處理行尾連字號斷字；(2) 壓縮連續空白與換行；(3) 將 `' ' " "` 等彎引號統一換成 `' "`（直引號）。
+- `[c] 引用格式`：正則驗證 `[RFC \d+ §[\d\.A-Za-z]+]`、`[Jacobson 1988, §[0-9A-Za-z]+, p\.\d+]`（允許頁碼範圍 `p.X-Y` 供段落層級引用）、`[BBR 2017, "小節標題", p.頁碼]` 格式（RFC 章節允許附錄字母如 `[RFC 9438 §B]`，Jacobson 論文允許 `§Intro` 與附錄字母 `§A`～`§D`，例如 `[Jacobson 1988, §B, p.20]`）。
+- `[d] 原文比對`：針對 RFC、Jacobson 1988 與 BBR 2017 引用的英文原句，以下正規化後與 `raw/*.txt` 進行完全一致的子字串比對（嚴禁模糊比對）；PDF 論文之引用留待獨立 AI 審查。正規化步驟：(1) 處理行尾連字號斷字；(2) 壓縮連續空白與換行；(3) 將 `' ' " "` 等彎引號統一換成 `' "`（直引號）。
 - `[e] 禁用詞`：對照 `wiki/glossary.md` 禁用詞，檢測到即回報檔案與行號（掃描時必須排除 `wiki/glossary.md` 本身的禁用詞對照表區塊）。
 - `[f] 來源欄位`：`sources/*.md` 頂部必須具備 `Category`、`Obsoletes`、`Updates`。
 - `[g] 標頭忠實`：`sources/*.md` 標頭值直接與 `raw/*.txt` 標頭原文比對。
 - `[h] 必備章節`：所有頁面末尾必須包含「## 參考來源」（排除 `wiki/index.md` 與 `wiki/log.md`）。
 - `[i] 參數出處`：`wiki/parameters.md` 內所有數字均必須緊跟出處標籤。
 - `[j] 衝突來源`：`wiki/conflicts.md` 每一項目必須具備至少兩個不同出處。
-- `[k] 出處存在性`：出處不只格式要對，被引用的位置必須真的存在：RFC 章節編號必須出現在 `raw/rfcNNNN.txt` 的章節標題中；Jacobson 1988 章節須屬於 `Intro, 1-4, A-D` 且頁碼在 1-25 之間；BBR 小節標題必須出現在 BBR 原文中。（2026-11-22 ingest 2 時新增：發現骨架頁面引用了不存在的 `RFC 5681 §1.2` 與 BBR "Introduction"，但 [c] 只檢查格式而全數通過。）
+- `[c]` / `[k]` 掃描時會略過行內程式碼與 Markdown 連結文字（ingest 6 時新增，避免 `[BBR](algorithms/bbr.md)` 這類連結被誤判為出處）。
+- `[k] 出處存在性`：出處不只格式要對，被引用的位置必須真的存在：RFC 章節編號必須出現在 `raw/rfcNNNN.txt` 的章節標題中；Jacobson 1988 章節須屬於 `Intro, 1-4, A-D` 且頁碼在 1-25 之間；BBR 小節標題必須出現在 BBR 原文中，且頁碼在 58-66 之間。（2026-11-22 ingest 2 時新增：發現骨架頁面引用了不存在的 `RFC 5681 §1.2` 與 BBR "Introduction"，但 [c] 只檢查格式而全數通過。）
 
 ### 簡報檢查規則（`--slides`）：
 - 每一頁 `<section>` 必須包含 `data-src="wiki/..."` 且該 Wiki 頁面真實存在。

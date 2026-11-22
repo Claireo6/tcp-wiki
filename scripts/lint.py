@@ -25,8 +25,8 @@ SLIDES_PATH = os.path.join(WORKSPACE_DIR, "slides", "index.html")
 #   - 數字、公式、英文原句之出處：必須為單一頁碼 p.X
 RFC_CITATION_PATTERN = re.compile(r'^\[RFC\s+\d+\s+§[\d\.A-Za-z]+\]$')
 JACOBSON_CITATION_PATTERN = re.compile(r'^\[Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+(?:-\d+)?\]$')
-BBR_CITATION_PATTERN = re.compile(r'^\[BBR\s+2016,\s+"[^"]+"\]$')
-ANY_CITATION_REGEX = re.compile(r'\[(?:RFC\s+\d+\s+§[\d\.A-Za-z]+|Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+(?:-\d+)?|BBR\s+2016,\s+"[^"]+")\]')
+BBR_CITATION_PATTERN = re.compile(r'^\[BBR\s+2017,\s+"[^"]+",\s+p\.\d+(?:-\d+)?\]$')
+ANY_CITATION_REGEX = re.compile(r'\[(?:RFC\s+\d+\s+§[\d\.A-Za-z]+|Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+(?:-\d+)?|BBR\s+2017,\s+"[^"]+",\s+p\.\d+(?:-\d+)?)\]')
 SUSPICIOUS_CITATION_REGEX = re.compile(r'\[(RFC|Jacobson|BBR)[^\]]*\]')
 
 DEFAULT_FORBIDDEN_TERMS = [
@@ -147,11 +147,19 @@ def check_internal_links(reporter, wiki_files):
                         reporter.add_error("[b] 內部連結", f"目標檔案不存在: `{target}`", file_path=wf, line_num=idx)
 
 
+def strip_non_citation_brackets(line):
+    """移除不是出處標籤的中括號內容：行內程式碼（`...`）與 Markdown 連結文字（[text](path)）。
+    （ingest 6 時新增：連結文字以 BBR / Jacobson 開頭時，曾被 [c] 誤判為格式錯誤的出處。）"""
+    line = re.sub(r'`[^`]*`', '', line)
+    line = re.sub(r'\[[^\]]*\]\([^)]*\)', '', line)
+    return line
+
 def check_citations(reporter, wiki_files):
     """[c] 引用格式檢查"""
     for wf in wiki_files:
         with open(wf, "r", encoding="utf-8") as f:
             for idx, line in enumerate(f, 1):
+                line = strip_non_citation_brackets(line)
                 # 找出看似出處標籤的所有中括號
                 suspicious_matches = SUSPICIOUS_CITATION_REGEX.finditer(line)
                 for match in suspicious_matches:
@@ -168,6 +176,7 @@ def check_citations(reporter, wiki_files):
 # [k] 出處章節存在性：只檢查格式不夠，還要確認被引用的章節真的存在於 raw/ 原文
 JACOBSON_VALID_SECTIONS = {"Intro", "1", "2", "3", "4", "A", "B", "C", "D"}  # 依 raw/jacobson1988.txt 實際章節結構
 JACOBSON_MAX_PAGE = 25
+BBR_FIRST_PAGE, BBR_LAST_PAGE = 58, 66  # Communications of the ACM 60(2), pp. 58-66
 
 def load_rfc_sections(rfc_num):
     path = os.path.join(RAW_DIR, f"rfc{rfc_num}.txt")
@@ -196,6 +205,7 @@ def check_citation_targets(reporter, wiki_files):
     for wf in wiki_files:
         with open(wf, "r", encoding="utf-8") as f:
             for idx, line in enumerate(f, 1):
+                line = strip_non_citation_brackets(line)
                 for m in re.finditer(r'\[RFC\s+(\d+)\s+§([\d\.A-Za-z]+)\]', line):
                     num, sec = m.group(1), m.group(2).rstrip('.')
                     if num not in rfc_cache:
@@ -211,10 +221,14 @@ def check_citation_targets(reporter, wiki_files):
                         reporter.add_error("[k] 出處存在性", f"Jacobson 1988 沒有 §{sec} 這個章節：`{m.group(0)}`", file_path=wf, line_num=idx)
                     if not (1 <= p1 <= p2 <= JACOBSON_MAX_PAGE):
                         reporter.add_error("[k] 出處存在性", f"Jacobson 1988 頁碼超出範圍 1-{JACOBSON_MAX_PAGE}：`{m.group(0)}`", file_path=wf, line_num=idx)
-                for m in re.finditer(r'\[BBR\s+\d{4},\s+"([^"]+)"', line):
+                for m in re.finditer(r'\[BBR\s+\d{4},\s+"([^"]+)"(?:,\s+p\.(\d+)(?:-(\d+))?)?', line):
                     title = m.group(1)
-                    if bbr_raw is not None and title not in bbr_raw:
+                    if bbr_raw is not None and " ".join(title.split()) not in bbr_raw:
                         reporter.add_error("[k] 出處存在性", f"BBR 原文找不到小節標題 \"{title}\"：`{m.group(0)}`", file_path=wf, line_num=idx)
+                    if m.group(2):
+                        p1, p2 = int(m.group(2)), int(m.group(3) or m.group(2))
+                        if not (BBR_FIRST_PAGE <= p1 <= p2 <= BBR_LAST_PAGE):
+                            reporter.add_error("[k] 出處存在性", f"BBR 頁碼超出期刊頁碼範圍 {BBR_FIRST_PAGE}-{BBR_LAST_PAGE}：`{m.group(0)}`", file_path=wf, line_num=idx)
 
 
 def normalize_quote_text(text, keep_hyphen=False):
@@ -240,6 +254,8 @@ def check_verbatim_quotes(reporter, wiki_files):
                 raw_path = os.path.join(RAW_DIR, f"{source_key}.txt")
             elif source_key == "jacobson1988":
                 raw_path = os.path.join(RAW_DIR, "jacobson1988.txt")
+            elif source_key == "bbr2017":
+                raw_path = os.path.join(RAW_DIR, "bbr2017.txt")
             else:
                 raw_path = None
 
@@ -280,6 +296,9 @@ def check_verbatim_quotes(reporter, wiki_files):
                 elif jacobson_matches:
                     target_source = "jacobson1988"
                     display_source = "raw/jacobson1988.txt"
+                elif re.search(r'\[BBR\s+2017,', block_text):
+                    target_source = "bbr2017"
+                    display_source = "raw/bbr2017.txt"
 
                 if target_source:
                     # 去除所有出處標籤

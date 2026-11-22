@@ -2,7 +2,7 @@
 
 本頁面彙整跨文獻間不同標準、非正式演進提案（如 Standards Track vs Experimental）、或學術論文與工程標準間存在分歧之記錄。每一項目均標註兩方或以上之來源出處。
 
-> 本頁只收錄**已 ingest** 文獻之間的歧異。尚未 ingest 的文獻（BBR）相關項目，會在 ingest 該篇時才加入。
+> 本頁只收錄**已 ingest** 文獻之間的歧異。
 
 ## 歧異項目彙整
 
@@ -41,6 +41,11 @@
 - **來源一（學術論文）**：0.5 的減少有較充分的理由，而 1 個封包的增加理由較弱 [Jacobson 1988, §D, p.23]。
 - **來源二（Standards Track）**：CUBIC 把乘法減少係數設為 0.7，以在擴展性與收斂速度之間取得平衡；Reno 使用 0.5 [RFC 9438 §3.4]。
 
+### 7. 壅塞信號：封包遺失 vs. 頻寬與延遲量測
+- **分歧描述**：RFC 5681 與 RFC 9438 的演算法以封包遺失作為壅塞信號；BBR 認為封包遺失與壅塞只有弱相關，改以量測 BtlBw 與 RTprop 來控制。值得注意的是，RFC 9438 本身也承認 loss-based 演算法在封包遺失不能代表頻寬使用狀況的網路中表現較差。
+- **來源一（Standards Track）**：本文件的演算法以封包遺失作為壅塞信號 [RFC 5681 §3]；CUBIC 同樣是 loss-based，在無線或行動網路中表現較差 [RFC 9438 §5.4]。
+- **來源二（期刊文章）**：把封包遺失視為壅塞是 1980 年代技術限制下的設計選擇 [BBR 2017, "Congestion-Based Congestion Control", p.58]；BBR 改從 Kleinrock 的壅塞模型與最佳操作點出發 [BBR 2017, "Conclusion", p.66]。
+
 ## 參考來源
 - [Jacobson 1988, §1, p.4]
 - [Jacobson 1988, §B, p.20]
@@ -52,3 +57,7 @@
 - [RFC 6928 §2]
 - [Jacobson 1988, §D, p.23]
 - [RFC 9438 §3.4]
+- [RFC 5681 §3]
+- [RFC 9438 §5.4]
+- [BBR 2017, "Congestion-Based Congestion Control", p.58]
+- [BBR 2017, "Conclusion", p.66]

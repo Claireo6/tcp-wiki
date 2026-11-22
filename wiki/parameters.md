@@ -26,12 +26,16 @@
 | CUBIC 常數 C | 0.4 [RFC 9438 §5.1] | [RFC 9438 §5.1] | 決定 CUBIC 在高 BDP 網路中的積極程度 |
 | CUBIC 目標視窗上限 | 1.5 [RFC 9438 §4.2] 倍 `cwnd` | [RFC 9438 §4.2] | 每個 RTT 的目標值限制在 `cwnd` 與 1.5 倍 `cwnd` 之間 |
 | CUBIC fast convergence 係數 | (1 + β_cubic) / 2 [RFC 9438 §4.7] | [RFC 9438 §4.7] | `cwnd` 小於 `W_max` 時，`W_max` 再降為 `cwnd` 乘以此係數 |
+| BBR ProbeBW 峰值增益 | 1.25 [BBR 2017, "Mobile Cellular Adaptive Bandwidth", p.66] 倍 BtlBw | [BBR 2017, "Mobile Cellular Adaptive Bandwidth", p.66] | 週期性多送一點以探測 BtlBw 是否變大 |
+| BBR ProbeRTT 在途量 | 4 [BBR 2017, "Matching the Packet Flow to the Delivery Path", p.63] 個封包 | [BBR 2017, "Matching the Packet Flow to the Delivery Path", p.63] | 至少維持 1 個 RTT，以量測真正的最小 RTT |
 | `cwnd` 初始值 / 重啟值 | 1 [Jacobson 1988, §1, p.4] 個封包 | [Jacobson 1988, §1, p.4] | 連線起始或逾時後重啟時 `cwnd` 之設定值 |
 | 乘法減少（Multiplicative Decrease）係數 | 0.5 [Jacobson 1988, §D, p.23] | [Jacobson 1988, §D, p.23] | 偵測壅塞時將視窗縮減至原大小之比例（減半） |
 | 加法增加（Additive Increase）量 | 1 [Jacobson 1988, §D, p.23] 個封包 / RTT | [Jacobson 1988, §D, p.23] | 無壅塞時每個 RTT 增加之視窗量（實作：每 ACK 增 `1/cwnd`） |
 | RTO 偏差乘數 | 4 [Jacobson 1988, §A, p.20] | [Jacobson 1988, §A, p.20] | 重傳計時器計算公式 $RTO = a + 4v$ 中的偏差（mean deviation）乘數 |
 
 ## 參考來源
+- [BBR 2017, "Mobile Cellular Adaptive Bandwidth", p.66]
+- [BBR 2017, "Matching the Packet Flow to the Delivery Path", p.63]
 - [RFC 9438 §3.4]
 - [RFC 9438 §4.2]
 - [RFC 9438 §4.6]

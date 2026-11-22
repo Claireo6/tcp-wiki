@@ -31,6 +31,12 @@
 | `K` | 回到平台時間 | 視窗從目前大小長回 `W_max` 所需的時間 | [RFC 9438 §4.2] |
 | Reno-friendly region | Reno 友善區域 | 三次函數比 Reno 慢時，CUBIC 直接跟隨 Reno 視窗的區域 | [RFC 9438 §4.3] |
 | HyStart++ | HyStart++ | RFC 9438 建議 CUBIC 使用的 slow start 演算法 | [RFC 9438 §4.10] |
+| BBR | BBR | Bottleneck Bandwidth and Round-trip propagation time；以量測兩參數取代遺失信號的壅塞控制 | [BBR 2017, "Congestion and Bottlenecks", p.60] |
+| `BtlBw` | 瓶頸頻寬 | 路徑上最慢鏈路的頻寬（水管最窄處的直徑） | [BBR 2017, "Congestion and Bottlenecks", p.58] |
+| `RTprop` | 往返傳播時間 | 不含排隊延遲的往返時間（水管的長度） | [BBR 2017, "Congestion and Bottlenecks", p.58] |
+| BDP | 頻寬延遲乘積 | BtlBw × RTprop，最佳操作點的在途資料量 | [BBR 2017, "Characterizing the Bottleneck", p.60] |
+| Bufferbloat | 緩衝區膨脹 | loss-based 演算法把大型瓶頸緩衝區塞滿造成的高延遲 | [BBR 2017, "Congestion-Based Congestion Control", p.58] |
+| Pacing gain | 速率增益 | BBR 以 BtlBw 的倍數控制送出速率，>1 探測頻寬、<1 排除佇列 | [BBR 2017, "Matching the Packet Flow to the Delivery Path", p.62] |
 | Conservation of Packets | 封包守恆原則 | 在穩定平衡連線中，舊封包離開網路前不得注入新封包；傳送端以 ACK 作為時脈調節 | [Jacobson 1988, §Intro, p.2] |
 | Self-clocking | 自我時脈 | 傳送端以接收端回傳的 ACK 為觸發信號送出新封包，使傳輸節奏對齊瓶頸鏈路速率 | [Jacobson 1988, §1, p.3] |
 | Exponential Backoff | 指數退避 | 連續逾時重傳時將 RTO 區間每次加倍，以防止壅塞崩潰 | [Jacobson 1988, §2, p.7] |
@@ -65,3 +71,8 @@
 - [RFC 9438 §4.2]
 - [RFC 9438 §4.3]
 - [RFC 9438 §4.10]
+- [BBR 2017, "Congestion and Bottlenecks", p.58]
+- [BBR 2017, "Congestion and Bottlenecks", p.60]
+- [BBR 2017, "Characterizing the Bottleneck", p.60]
+- [BBR 2017, "Congestion-Based Congestion Control", p.58]
+- [BBR 2017, "Matching the Packet Flow to the Delivery Path", p.62]

@@ -15,6 +15,7 @@
 - [The NewReno Modification to TCP's Fast Recovery Algorithm (RFC 6582)](sources/rfc6582.md) - 2012 年 Standards Track，以 partial ACK 處理同一視窗多個遺失。
 - [Increasing TCP's Initial Window (RFC 6928)](sources/rfc6928.md) - 2013 年 Experimental，提議把初始視窗上限提高到 10 個區段。
 - [CUBIC for Fast and Long-Distance Networks (RFC 9438)](sources/rfc9438.md) - 2023 年 Standards Track，Updates 5681，以三次函數取代線性增長。
+- [BBR: Congestion-Based Congestion Control (BBR 2017)](sources/bbr2017.md) - 2017 年期刊文章，主張封包遺失不等於壅塞，改量測 BtlBw 與 RTprop。
 
 ## 核心機制（Concepts）
 - [接收視窗與壅塞視窗](concepts/rwnd-vs-cwnd.md) - rwnd 保護接收端、cwnd 保護網路，實際傳送量取兩者較小值。
@@ -27,3 +28,4 @@
 - [Reno](algorithms/reno.md) - RFC 5681 四個演算法的組合，名稱來自 1990 BSD Reno 版本；多個遺失時常逾時。
 - [NewReno](algorithms/new-reno.md) - 收到 partial ACK 時重傳下一個區段並留在 fast recovery。
 - [CUBIC](algorithms/cubic.md) - 先凹後凸的三次函數增長，β = 0.7、C = 0.4，Linux/Windows/Apple 預設。
+- [BBR](algorithms/bbr.md) - 量測瓶頸頻寬與往返傳播時間，讓在途量維持在 BDP 附近。

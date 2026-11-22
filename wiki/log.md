@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-11-22 - 文獻 6/6 bbr2017（接手者：Claude）
+
+- **步驟 0 來源驗證**：raw/ 中的 BBR 檔案是 Communications of the ACM，February 2017，Vol. 60，No. 2，pp. 58-66（DOI 10.1145/3009824），作者 Cardwell / Cheng / Gunn / Hassas Yeganeh / Jacobson，文章由 queue.acm.org 發展而來。專案原本以「BBR 2016」（ACM Queue 網頁版的年份）規劃，但檔案中沒有出現 2016，無法從 raw/ 驗證，因此**全面改為 BBR 2017**；檔案已由使用者改名為 `raw/bbr2017.pdf` 與 `raw/bbr2017.txt`。這份是正式排版期刊 PDF，頁碼固定，出處格式改為 `BBR 2017` + 小節標題 + 頁碼（原本「網頁另存 PDF 頁碼不可靠」的理由已不成立）。全文搜尋 Tahoe：0 次。
+- **規則調整（寫入前）**：lint 的 [c] 改用新格式；[k] 檢查 BBR 小節標題存在且頁碼在 58-66；[d] 原句比對加入 `raw/bbr2017.txt`；AGENTS.md 同步更新。
+- **步驟 3 寫入**：
+  - 新增 `sources/bbr2017.md`、`algorithms/bbr.md`（依教學深度設定只講核心概念，不推導 pacing 公式）
+  - `conflicts.md` 新增第 7 筆：壅塞信號（封包遺失 vs. 量測 BtlBw 與 RTprop），並移除「尚未 ingest」的提示
+  - `parameters.md` 新增 ProbeBW 峰值增益 1.25、ProbeRTT 在途量 4 個封包；`timeline.md` 新增 2017 列；`glossary.md` 新增 BBR、BtlBw、RTprop、BDP、Bufferbloat、Pacing gain；`index.md` 新增 2 頁
+  - 自我複查：bbr.md 原本寫「loss-based 演算法一直增加在途量直到緩衝區滿」並標成開場段落 p.58，複查原文後改為 "Congestion and Bottlenecks" p.59 的原意（運作在頻寬受限區域的最右緣，代價是高延遲與頻繁遺失）。
+- **步驟 4 Lint（2 輪）**：
+  - **第 1 輪 FAIL**（`reports/lint-20261122-205121.md`，6 項）：其中 5 項是 **lint 誤判**，Markdown 連結文字（如連到 BBR 頁、Jacobson 1988 頁的連結）以 BBR / Jacobson 開頭，被 [c] 當成格式錯誤的出處；另外說明出處格式的行內程式碼也被當成出處。修正：[c] 與 [k] 掃描前先移除行內程式碼與 Markdown 連結文字。
+  - **第 2 輪 PASS**（`reports/lint-20261122-205132.md`，21 個檔案，0 項違規）。
+  - **修正後負向測試**：放入 4 個錯誤出處（不存在的 BBR 小節 "Introduction"、舊格式 BBR 2016、超出範圍的 p.70、不存在的 RFC 5681 §1.2），4 個全部被抓到（`reports/lint-20261122-205137.md`），還原後 PASS（`reports/lint-20261122-205138.md`）。
+- **Wiki 完成狀態**：6 篇文獻全部 ingest 完成（Jacobson 1988、RFC 5681、RFC 6582、RFC 6928、RFC 9438、BBR 2017），共 21 頁。
+
+---
+
 ## 2026-11-22 - 文獻 5/6 rfc9438（接手者：Claude）
 
 - **步驟 0 來源驗證**：標題 "CUBIC for Fast and Long-Distance Networks"、作者 Xu / Ha / Rhee / Goel / Eggert（編輯）、August 2023、Standards Track、Obsoletes 8312、**Updates 5681**，與原文相符。本 RFC 為新版格式，純文字檔沒有頁碼，因此 sources 頁不記錄頁數。全文搜尋 Tahoe：0 次。
