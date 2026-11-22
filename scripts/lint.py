@@ -180,24 +180,35 @@ def check_verbatim_quotes(reporter, wiki_files):
         with open(wf, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
-        for idx, line in enumerate(lines, 1):
+        idx = 0
+        while idx < len(lines):
+            line = lines[idx]
             if line.strip().startswith(">"):
-                # 檢測是否有 RFC 出處標籤
-                rfc_matches = re.findall(r'\[RFC\s+(\d+)\s+§[\d\.A-Za-z]+\]', line)
+                start_line = idx + 1
+                quote_lines = []
+                while idx < len(lines) and lines[idx].strip().startswith(">"):
+                    clean_l = lines[idx].strip().lstrip('>').strip()
+                    quote_lines.append(clean_l)
+                    idx += 1
+                
+                block_text = " ".join(quote_lines)
+                rfc_matches = re.findall(r'\[RFC\s+(\d+)\s+§[\d\.A-Za-z]+\]', block_text)
                 if rfc_matches:
                     rfc_num = rfc_matches[0]
-                    # 擷取引用文字（去除 > 與出處標籤）
-                    quote_text = re.sub(r'\[RFC\s+\d+\s+§[\d\.A-Za-z]+\]', '', line)
-                    quote_text = quote_text.lstrip('>').strip().strip('"').strip('“').strip('”')
+                    # 擷取引用文字（去除出處標籤）
+                    quote_text = re.sub(r'\[RFC\s+\d+\s+§[\d\.A-Za-z]+\]', '', block_text)
+                    quote_text = quote_text.strip().strip('"').strip('“').strip('”').strip("'")
                     
                     # 忽略中文說明或純數字標註
                     if len(quote_text) > 10 and re.search(r'[a-zA-Z]{3,}', quote_text):
                         compressed_quote = " ".join(quote_text.split())
                         raw_content = get_raw_rfc(rfc_num)
                         if not raw_content:
-                            reporter.add_error("[d] 原文比對", f"找不到對應的 raw/rfc{rfc_num}.txt 來源檔", file_path=wf, line_num=idx)
+                            reporter.add_error("[d] 原文比對", f"找不到對應的 raw/rfc{rfc_num}.txt 來源檔", file_path=wf, line_num=start_line)
                         elif compressed_quote not in raw_content:
-                            reporter.add_error("[d] 原文比對", f"英文原句無法在 raw/rfc{rfc_num}.txt 找到完全一致匹配: `{compressed_quote[:50]}...`", file_path=wf, line_num=idx)
+                            reporter.add_error("[d] 原文比對", f"英文原句無法在 raw/rfc{rfc_num}.txt 找到完全一致匹配: `{compressed_quote[:50]}...`", file_path=wf, line_num=start_line)
+            else:
+                idx += 1
 
 
 def check_forbidden_terms(reporter, wiki_files):
