@@ -21,9 +21,9 @@ SLIDES_PATH = os.path.join(WORKSPACE_DIR, "slides", "index.html")
 
 # 正則表達式規範
 RFC_CITATION_PATTERN = re.compile(r'^\[RFC\s+\d+\s+§[\d\.A-Za-z]+\]$')
-JACOBSON_CITATION_PATTERN = re.compile(r'^\[Jacobson\s+1988,\s+§\d+,\s+p\.\d+\]$')
+JACOBSON_CITATION_PATTERN = re.compile(r'^\[Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+\]$')
 BBR_CITATION_PATTERN = re.compile(r'^\[BBR\s+2016,\s+"[^"]+"\]$')
-ANY_CITATION_REGEX = re.compile(r'\[(?:RFC\s+\d+\s+§[\d\.A-Za-z]+|Jacobson\s+1988,\s+§\d+,\s+p\.\d+|BBR\s+2016,\s+"[^"]+")\]')
+ANY_CITATION_REGEX = re.compile(r'\[(?:RFC\s+\d+\s+§[\d\.A-Za-z]+|Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+|BBR\s+2016,\s+"[^"]+")\]')
 SUSPICIOUS_CITATION_REGEX = re.compile(r'\[(RFC|Jacobson|BBR)[^\]]*\]')
 
 DEFAULT_FORBIDDEN_TERMS = [
@@ -162,19 +162,35 @@ def check_citations(reporter, wiki_files):
                         reporter.add_error("[c] 引用格式", f"引用格式不符規範: `{tag}`", file_path=wf, line_num=idx)
 
 
+def normalize_quote_text(text):
+    if not text:
+        return ""
+    # 處理行尾連字號斷字，例如 "win- dow" 或 "win-\ndow" -> "window"
+    text = re.sub(r'(\b\w+)-[\s\r\n]+(\w+\b)', r'\1\2', text)
+    # 將常見引號標準化
+    text = text.replace('“', '"').replace('”', '"').replace('‘', "'").replace('’', "'")
+    return " ".join(text.split())
+
+
 def check_verbatim_quotes(reporter, wiki_files):
-    """[d] 原文比對：針對 RFC 引用的英文原句，壓縮連續空白與換行後，與 raw/*.txt 進行完全一致的子字串比對"""
+    """[d] 原文比對：針對 RFC 與 Jacobson 1988 引用的英文原句，壓縮連續空白與換行後，與 raw/*.txt 進行完全一致的子字串比對"""
     raw_texts = {}
 
-    def get_raw_rfc(rfc_num):
-        if rfc_num not in raw_texts:
-            raw_path = os.path.join(RAW_DIR, f"rfc{rfc_num}.txt")
-            if os.path.exists(raw_path):
-                with open(raw_path, "r", encoding="utf-8", errors="ignore") as f:
-                    raw_texts[rfc_num] = " ".join(f.read().split())
+    def get_raw_content(source_key):
+        if source_key not in raw_texts:
+            if source_key.startswith("rfc"):
+                raw_path = os.path.join(RAW_DIR, f"{source_key}.txt")
+            elif source_key == "jacobson1988":
+                raw_path = os.path.join(RAW_DIR, "jacobson1988.txt")
             else:
-                raw_texts[rfc_num] = None
-        return raw_texts[rfc_num]
+                raw_path = None
+
+            if raw_path and os.path.exists(raw_path):
+                with open(raw_path, "r", encoding="utf-8", errors="ignore") as f:
+                    raw_texts[source_key] = normalize_quote_text(f.read())
+            else:
+                raw_texts[source_key] = None
+        return raw_texts[source_key]
 
     for wf in wiki_files:
         with open(wf, "r", encoding="utf-8") as f:
@@ -192,21 +208,32 @@ def check_verbatim_quotes(reporter, wiki_files):
                     idx += 1
                 
                 block_text = " ".join(quote_lines)
+                
+                # 檢查 RFC 或 Jacobson 引用
                 rfc_matches = re.findall(r'\[RFC\s+(\d+)\s+§[\d\.A-Za-z]+\]', block_text)
+                jacobson_matches = re.findall(r'\[Jacobson\s+1988,\s+§[0-9A-Za-z]+,\s+p\.\d+\]', block_text)
+
+                target_source = None
+                display_source = None
                 if rfc_matches:
-                    rfc_num = rfc_matches[0]
-                    # 擷取引用文字（去除出處標籤）
-                    quote_text = re.sub(r'\[RFC\s+\d+\s+§[\d\.A-Za-z]+\]', '', block_text)
+                    target_source = f"rfc{rfc_matches[0]}"
+                    display_source = f"raw/{target_source}.txt"
+                elif jacobson_matches:
+                    target_source = "jacobson1988"
+                    display_source = "raw/jacobson1988.txt"
+
+                if target_source:
+                    # 去除所有出處標籤
+                    quote_text = ANY_CITATION_REGEX.sub('', block_text)
                     quote_text = quote_text.strip().strip('"').strip('“').strip('”').strip("'")
                     
-                    # 忽略中文說明或純數字標註
                     if len(quote_text) > 10 and re.search(r'[a-zA-Z]{3,}', quote_text):
-                        compressed_quote = " ".join(quote_text.split())
-                        raw_content = get_raw_rfc(rfc_num)
+                        compressed_quote = normalize_quote_text(quote_text)
+                        raw_content = get_raw_content(target_source)
                         if not raw_content:
-                            reporter.add_error("[d] 原文比對", f"找不到對應的 raw/rfc{rfc_num}.txt 來源檔", file_path=wf, line_num=start_line)
+                            reporter.add_error("[d] 原文比對", f"找不到對應的 {display_source} 來源檔", file_path=wf, line_num=start_line)
                         elif compressed_quote not in raw_content:
-                            reporter.add_error("[d] 原文比對", f"英文原句無法在 raw/rfc{rfc_num}.txt 找到完全一致匹配: `{compressed_quote[:50]}...`", file_path=wf, line_num=start_line)
+                            reporter.add_error("[d] 原文比對", f"英文原句無法在 {display_source} 找到完全一致匹配: `{compressed_quote[:50]}...`", file_path=wf, line_num=start_line)
             else:
                 idx += 1
 

@@ -10,10 +10,13 @@
 - [異動日誌](log.md) - 知識庫異動、文獻消化與自動化檢驗紀錄。
 
 ## 文獻摘要（Sources）
-（尚無文獻，待第 1 篇起依序建立）
+- [Congestion Avoidance and Control (Jacobson 1988)](sources/jacobson1988.md) - 奠定現代 TCP 壅塞控制基礎，提出慢啟動、AIMD 壅塞避免與 RTT 變異估算等 7 大演算法。
 
 ## 核心機制（Concepts）
-（尚無機制頁，待消化文獻時建立）
+- [慢啟動](concepts/slow-start.md) - 依據封包守恆與 ACK 時脈指數級探測頻寬，初始與逾時後設 cwnd=1。
+- [壅塞避免](concepts/congestion-avoidance.md) - 以封包逾時為壅塞信號，採加法增加（每 RTT 增 1）與乘法減少（減半 0.5）調節視窗。
+- [快速重傳與快速恢復](concepts/fast-retransmit-fast-recovery.md) - 1988 論文列為 4BSD TCP 7 大演算法之一，具體機制留待後續 RFC 規範。
+- [封包遺失偵測](concepts/packet-loss-detection.md) - 介紹 RTO 均值與變異量估算（RTO=a+4v）、指數退避與早期快速重傳概念。
 
 ## 演算法（Algorithms）
 （尚無演算法頁，待消化文獻時建立）
