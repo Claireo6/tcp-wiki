@@ -29,7 +29,7 @@ STATE_DIAGRAM = """
 <g class="node"><rect x="10" y="95" width="130" height="56" rx="10"/><text x="75" y="129">慢啟動</text></g>
 <g class="node"><rect x="255" y="95" width="130" height="56" rx="10"/><text x="320" y="129">壅塞避免</text></g>
 <g class="node fr"><rect x="500" y="95" width="130" height="56" rx="10"/><text x="565" y="129">快速恢復</text></g>
-<path class="edge" d="M140,123 L255,123" marker-end="url(#arr)"/><text class="lbl" x="197" y="115">cwnd ≥ ssthresh</text>
+<path class="edge" d="M140,123 L255,123" marker-end="url(#arr)"/><text class="lbl" x="197" y="115">cwnd &gt; ssthresh</text>
 <path class="edge" d="M385,123 L500,123" marker-end="url(#arr)"/><text class="lbl" x="442" y="115">3 個重複 ACK</text>
 <path class="edge warn" d="M300,95 C300,40 95,40 95,95" marker-end="url(#arr)"/><text class="lbl warn" x="197" y="48">逾時：cwnd = 1</text>
 <path class="edge warn" d="M565,95 C565,-12 55,-12 55,95" marker-end="url(#arr)"/><text class="lbl warn" x="310" y="9">逾時：cwnd = 1</text>

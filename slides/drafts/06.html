@@ -3,7 +3,7 @@
 <p class="q">這頁要回答：cwnd 到了門檻之後，要怎麼繼續調整？</p>
 <div class="grid2">
 <div class="box"><h3>沒事時：慢慢加</h3><p>每個 RTT 只加約 1 個區段。實作上是每收到一個 ACK 加 1/cwnd，一整輪約加 1。</p></div>
-<div class="box warn-box"><h3>出事時：大幅砍</h3><p>發生遺失代表已經超過網路能負荷的量，門檻 ssthresh 降為在途資料量的一半。</p></div>
+<div class="box warn-box"><h3>出事時：大幅砍</h3><p>發生遺失代表已經超過網路能負荷的量，門檻 ssthresh 降為在途資料量的一半（但不小於 2 個區段）。</p></div>
 </div>
 <p>這種「加法增加、乘法減少」稱為 AIMD。Jacobson 認為減半有充分理由，但每輪加 1「幾乎肯定太大」。</p>
 <div class="box key-box">一句話記住：試探時小心翼翼，發現壅塞時立刻大退一步。</div>

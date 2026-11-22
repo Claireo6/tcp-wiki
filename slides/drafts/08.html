@@ -4,7 +4,7 @@
 <svg id="state-diagram" viewBox="0 0 640 250" role="img" aria-label="TCP 壅塞控制狀態轉移圖"></svg>
 <ol class="steps compact">
 <li><b>快速重傳</b>：收到第 3 個重複 ACK，不等計時器，立刻重傳遺失的區段。</li>
-<li><b>快速恢復</b>：ssthresh 降為在途量的一半，cwnd 從 ssthresh 附近繼續，不退回 1。</li>
+<li><b>快速恢復</b>：ssthresh 降為在途量的一半，cwnd 先設為 ssthresh 加 3 個區段，不退回 1。</li>
 <li><b>結束</b>：收到確認新資料的 ACK，cwnd 縮回 ssthresh，回到壅塞避免。</li>
 </ol>
 <div class="box key-box">一句話記住：重複 ACK 代表後面的封包有到、ACK 時脈還在，所以不必從頭開始。</div>

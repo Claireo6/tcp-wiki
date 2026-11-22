@@ -70,6 +70,7 @@ footer a{color:var(--muted)}
 </div>
 <details><summary>詳細補充：怎麼讀這份教材</summary>
 <p>用鍵盤左右鍵或下方按鈕換頁。每頁下方標示內容來自 wiki 的哪一頁；點開「詳細補充」可以看到更深入的說明與原文出處。</p>
+<p>「先備知識」依專案設定的目標讀者（修過基礎計概的大學生）列出，不屬於 wiki 內容。</p>
 <p>本教材所有內容都來自專案 wiki，而 wiki 只根據 6 份原始文獻撰寫：Jacobson 1988、RFC 5681、RFC 6582、RFC 6928、RFC 9438、BBR 2017。</p>
 </details>
 </section>
@@ -78,7 +79,7 @@ footer a{color:var(--muted)}
 <p class="q">這頁要回答：為什麼 TCP 需要壅塞控制？</p>
 <div class="bigstat"><span>32 Kbps</span><span class="arrow">→</span><span class="bad">40 bps</span></div>
 <p>1986 年 10 月，網際網路發生「壅塞崩潰（Congestion Collapse）」：LBL 到 UC Berkeley 的吞吐量掉到原本的千分之一。</p>
-<p>Jacobson 研究後發現，問題不在 TCP 協定本身，而在實作面對壅塞時的錯誤行為。例如重傳計時器設得太短，會把排隊延遲誤當成遺失，重送一堆其實沒丟的封包，讓網路更塞。</p>
+<p>Jacobson 研究後發現，問題不在 TCP 協定本身，而在實作面對壅塞時的錯誤行為。例如重傳計時器沒有考慮往返時間的變動，網路負載一高，就會把排隊延遲誤當成遺失，重送一堆其實沒丟的封包，讓網路更塞。</p>
 <div class="box key-box">一句話記住：傳送端如果不懂得「網路塞了就放慢」，大家一起塞到動不了。</div>
 <details><summary>詳細補充：Jacobson 加入的 7 個演算法</summary>
 <p>(i) 往返時間變異量估算、(ii) 指數型重傳計時器退避、(iii) 慢啟動、(iv) 更主動的接收端確認策略、(v) 壅塞時動態調整視窗、(vi) Karn 箝位重傳退避、(vii) 快速重傳。論文只詳述 (i) 至 (v)，快速重傳留待之後的 RFC 說明。</p>
@@ -123,12 +124,12 @@ footer a{color:var(--muted)}
 <li><b>起點很小</b>：cwnd 的初始值（IW）依 RFC 5681 是 2～4 個區段，因為一開始不知道網路有多大。</li>
 <li><b>每個 ACK 加 1</b>：每收到一個確認新資料的 ACK，cwnd 加 1 個區段。</li>
 <li><b>所以每個 RTT 翻倍</b>：這一輪送出幾個，下一輪就回來幾個 ACK，cwnd 就變成兩倍（1、2、4……）。</li>
-<li><b>碰到門檻就換模式</b>：cwnd 超過門檻 ssthresh 後，改用壅塞避免。</li>
+<li><b>碰到門檻就換模式</b>：cwnd 超過門檻 ssthresh 後，改用壅塞避免（剛好相等時兩種都可以）。</li>
 </ol>
 <div class="box key-box">一句話記住：名字叫「慢」，其實是指數成長。</div>
 <details><summary>詳細補充：初始值與門檻</summary>
 <p>1988 年的設計從 1 個封包開始；RFC 5681 依區段大小允許 2 到 4 個區段；RFC 6928 實驗性地提議 10 個區段（見 IW10 那頁）。ssthresh 一開始要設得很大，讓網路狀況決定何時停止翻倍。RTT（往返時間）是封包送出到收到 ACK 的時間。</p>
-<p class="cite">出處：[Jacobson 1988, §1, p.4]、[RFC 5681 §3.1]</p>
+<p class="cite">出處：[Jacobson 1988, §1, p.4]、[RFC 5681 §3.1]、[RFC 6928 §1]</p>
 </details>
 </section>
 <section data-src="wiki/concepts/congestion-avoidance.md">
@@ -136,7 +137,7 @@ footer a{color:var(--muted)}
 <p class="q">這頁要回答：cwnd 到了門檻之後，要怎麼繼續調整？</p>
 <div class="grid2">
 <div class="box"><h3>沒事時：慢慢加</h3><p>每個 RTT 只加約 1 個區段。實作上是每收到一個 ACK 加 1/cwnd，一整輪約加 1。</p></div>
-<div class="box warn-box"><h3>出事時：大幅砍</h3><p>發生遺失代表已經超過網路能負荷的量，門檻 ssthresh 降為在途資料量的一半。</p></div>
+<div class="box warn-box"><h3>出事時：大幅砍</h3><p>發生遺失代表已經超過網路能負荷的量，門檻 ssthresh 降為在途資料量的一半（但不小於 2 個區段）。</p></div>
 </div>
 <p>這種「加法增加、乘法減少」稱為 AIMD。Jacobson 認為減半有充分理由，但每輪加 1「幾乎肯定太大」。</p>
 <div class="box key-box">一句話記住：試探時小心翼翼，發現壅塞時立刻大退一步。</div>
@@ -168,7 +169,7 @@ footer a{color:var(--muted)}
 <g class="node"><rect x="10" y="95" width="130" height="56" rx="10"/><text x="75" y="129">慢啟動</text></g>
 <g class="node"><rect x="255" y="95" width="130" height="56" rx="10"/><text x="320" y="129">壅塞避免</text></g>
 <g class="node fr"><rect x="500" y="95" width="130" height="56" rx="10"/><text x="565" y="129">快速恢復</text></g>
-<path class="edge" d="M140,123 L255,123" marker-end="url(#arr)"/><text class="lbl" x="197" y="115">cwnd ≥ ssthresh</text>
+<path class="edge" d="M140,123 L255,123" marker-end="url(#arr)"/><text class="lbl" x="197" y="115">cwnd &gt; ssthresh</text>
 <path class="edge" d="M385,123 L500,123" marker-end="url(#arr)"/><text class="lbl" x="442" y="115">3 個重複 ACK</text>
 <path class="edge warn" d="M300,95 C300,40 95,40 95,95" marker-end="url(#arr)"/><text class="lbl warn" x="197" y="48">逾時：cwnd = 1</text>
 <path class="edge warn" d="M565,95 C565,-12 55,-12 55,95" marker-end="url(#arr)"/><text class="lbl warn" x="310" y="9">逾時：cwnd = 1</text>
@@ -177,7 +178,7 @@ footer a{color:var(--muted)}
 </svg>
 <ol class="steps compact">
 <li><b>快速重傳</b>：收到第 3 個重複 ACK，不等計時器，立刻重傳遺失的區段。</li>
-<li><b>快速恢復</b>：ssthresh 降為在途量的一半，cwnd 從 ssthresh 附近繼續，不退回 1。</li>
+<li><b>快速恢復</b>：ssthresh 降為在途量的一半，cwnd 先設為 ssthresh 加 3 個區段，不退回 1。</li>
 <li><b>結束</b>：收到確認新資料的 ACK，cwnd 縮回 ssthresh，回到壅塞避免。</li>
 </ol>
 <div class="box key-box">一句話記住：重複 ACK 代表後面的封包有到、ACK 時脈還在，所以不必從頭開始。</div>
@@ -186,7 +187,7 @@ footer a{color:var(--muted)}
 <p class="cite">出處：[RFC 5681 §3.2]</p>
 </details>
 </section>
-<section data-src="wiki/algorithms/new-reno.md">
+<section data-src="wiki/algorithms/new-reno.md wiki/sources/rfc6582.md">
 <h2>Reno 的弱點與 NewReno</h2>
 <p class="q">這頁要回答：同一批資料掉了好幾個封包，會發生什麼事？</p>
 <div class="grid2">
@@ -208,11 +209,11 @@ footer a{color:var(--muted)}
 <li><b>問題</b>：網頁物件變大，很多連線還沒離開慢啟動就結束，小的起點成了延遲瓶頸。</li>
 <li><b>提案</b>：RFC 6928 提議把初始視窗上限提高到 10 個區段（最多 14600 位元組）。</li>
 <li><b>效益</b>：超過 4 KB 的資料，最多省下 4 個 RTT；Google 實驗中平均搜尋延遲改善 11.7% 與 8.7%。</li>
-<li><b>代價</b>：重傳率小幅上升 0.3% 與 0.7%。</li>
+<li><b>代價</b>：重傳率小幅上升 0.3 與 0.7 個百分點。</li>
 </ul>
 <div class="box key-box">一句話記住：IW10 讓短連線更快，但它是實驗性提案，沒有監控能力的系統不得預設開啟。</div>
 <details><summary>詳細補充：和正式標準的差異</summary>
-<p>RFC 6928 的標頭沒有 Updates 欄位，所以本 wiki 把它和 RFC 5681 的差異（IW 上限、SYN 遺失後是否重設初始視窗）記錄為歧異，而不是正式演進。11.7% 與 8.7% 分別是 AvgDC 與 SlowDC 兩個資料中心的結果。</p>
+<p>RFC 6928 的標頭沒有 Updates 欄位，所以本 wiki 把它和 RFC 5681 的差異（IW 上限、SYN 遺失後是否重設初始視窗）記錄為歧異，而不是正式演進。11.7% 與 8.7% 分別是 AvgDC 與 SlowDC 兩個資料中心的結果；重傳率分別從 1.98% 升到 2.29%、從 3.54% 升到 4.21%。</p>
 <p class="cite">出處：[RFC 6928 §1]、[RFC 6928 §2]、[RFC 6928 §4]、[RFC 6928 §5.1]、[RFC 6928 §10.1]、[RFC 6928 §10.2]、[RFC 6928 §12]</p>
 </details>
 </section>
@@ -223,11 +224,11 @@ footer a{color:var(--muted)}
 <ul class="compact">
 <li><b>Reno 的問題</b>：壅塞後每個 RTT 只加 1，大頻寬網路要很久才能回到原本速度。</li>
 <li><b>CUBIC 的做法</b>：記住上次壅塞時的視窗 W_max，先快速長回去、接近 W_max 時放慢（凹），超過後再加速探測（凸）。</li>
-<li><b>減少較溫和</b>：遇到壅塞乘 0.7，Reno 是乘 0.5。</li>
+<li><b>減少較溫和</b>：遇到壅塞時，ssthresh 設為在途量乘 0.7；Reno 是乘 0.5。</li>
 </ul>
 <div class="box key-box">一句話記住：CUBIC 是目前 Linux、Windows 與 Apple 的預設演算法。</div>
 <details><summary>詳細補充：公式與參數</summary>
-<p>W_cubic(t) = C·(t − K)³ + W_max，C = 0.4。t 是距離上次壅塞的時間，K 是長回 W_max 所需的時間。因為視窗依「時間」而不是「ACK 次數」增長，不同 RTT 的連線也能較公平地分享頻寬。RFC 9438 正式更新了 RFC 5681。</p>
+<p>W_cubic(t) = C·(t − K)³ + W_max，C = 0.4。t 是距離上次壅塞的時間，K 是長回 W_max 所需的時間。因為視窗依「時間」而不是「ACK 次數」增長，不同 RTT 的連線也能較公平地分享頻寬。RFC 9438 正式更新了 RFC 5681。上圖只呈現曲線形狀，省略了 Reno-friendly 區域與 1.5 倍目標上限等細節。</p>
 <p class="cite">出處：[RFC 9438 §1]、[RFC 9438 §3.1]、[RFC 9438 §3.3]、[RFC 9438 §3.4]、[RFC 9438 §4.2]、[RFC 9438 §5.1]</p>
 </details>
 </section>
@@ -236,7 +237,7 @@ footer a{color:var(--muted)}
 <p class="q">這頁要回答：用「封包遺失」判斷壅塞，一定對嗎？</p>
 <p>BBR 的作者群（包括 1988 年的 Jacobson）認為，把遺失當成壅塞是早期技術限制下的選擇：緩衝區大時，loss-based 演算法會把它塞滿；緩衝區小時，又會把遺失誤判成壅塞。</p>
 <div class="grid2">
-<div class="box"><h3>BtlBw 瓶頸頻寬</h3><p>路徑最窄處能通過的速率，像水管最細處的粗細。</p></div>
+<div class="box"><h3>BtlBw 瓶頸頻寬</h3><p>路徑最窄處能通過的速率，像水管最窄處的直徑。</p></div>
 <div class="box"><h3>RTprop 往返傳播時間</h3><p>沒有排隊時的往返時間，像水管的長度。</p></div>
 </div>
 <p>BBR 持續量測這兩個數，讓在途資料量維持在 BDP（BtlBw × RTprop）附近。</p>
