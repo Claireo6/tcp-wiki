@@ -33,6 +33,17 @@
 | 加法增加（Additive Increase）量 | 1 [Jacobson 1988, §D, p.23] 個封包 / RTT | [Jacobson 1988, §D, p.23] | 無壅塞時每個 RTT 增加之視窗量（實作：每 ACK 增 `1/cwnd`） |
 | RTO 偏差乘數 | 4 [Jacobson 1988, §A, p.20] | [Jacobson 1988, §A, p.20] | 重傳計時器計算公式 $RTO = a + 4v$ 中的偏差（mean deviation）乘數 |
 
+## 簡報引用之情境數字
+以下數字不是協定參數，而是簡報敘事會引用的文獻事實；依 AGENTS.md 的簡報檢查規則，簡報中出現的數字都必須在此登錄並附出處。
+
+| 項目 | 數值 | 出處標籤 | 說明 |
+| :--- | :--- | :--- | :--- |
+| 1986 壅塞崩潰前的吞吐量 | 32 [Jacobson 1988, §Intro, p.1] Kbps | [Jacobson 1988, §Intro, p.1] | LBL 到 UC Berkeley |
+| 1986 壅塞崩潰時的吞吐量 | 40 [Jacobson 1988, §Intro, p.1] bps | [Jacobson 1988, §Intro, p.1] | 同一路徑，約千分之一 |
+| 4BSD TCP 新增演算法數量 | 7 [Jacobson 1988, §Intro, p.2] 個 | [Jacobson 1988, §Intro, p.2] | (i) 至 (vii) |
+| BBR 在 B4 美歐路徑的吞吐量 | 2 [BBR 2017, "Google B4 WAN Deployment Experience", p.64] Gbps | [BBR 2017, "Google B4 WAN Deployment Experience", p.64] | 加大接收緩衝區後 |
+| CUBIC 在同一路徑的吞吐量 | 15 [BBR 2017, "Google B4 WAN Deployment Experience", p.64] Mbps | [BBR 2017, "Google B4 WAN Deployment Experience", p.64] | 相對改善 133 [BBR 2017, "Google B4 WAN Deployment Experience", p.64] 倍 |
+
 ## 參考來源
 - [BBR 2017, "Mobile Cellular Adaptive Bandwidth", p.66]
 - [BBR 2017, "Matching the Packet Flow to the Delivery Path", p.63]
@@ -55,3 +66,6 @@
 - [Jacobson 1988, §1, p.4]
 - [Jacobson 1988, §A, p.20]
 - [Jacobson 1988, §D, p.23]
+- [Jacobson 1988, §Intro, p.1]
+- [Jacobson 1988, §Intro, p.2]
+- [BBR 2017, "Google B4 WAN Deployment Experience", p.64]

@@ -1,0 +1,13 @@
+<section data-src="wiki/algorithms/bbr.md">
+<h2>BBR：遺失不等於壅塞</h2>
+<p>BBR 的作者群（包括 1988 年的 Jacobson）認為，把遺失當成壅塞是早期技術限制下的選擇。BBR 改量兩個數：</p>
+<ul>
+<li><b>BtlBw</b> 瓶頸頻寬：水管最窄處的粗細</li>
+<li><b>RTprop</b> 往返傳播時間：水管的長度</li>
+</ul>
+<p class="key">在途量等於 BDP 時，吞吐量最高、延遲最低。</p>
+<details><summary>詳細補充：部署結果</summary>
+<p>loss-based 演算法在大緩衝區會造成 bufferbloat，在小緩衝區會把遺失誤判為壅塞。Google B4 的一條美歐路徑上，BBR 達到 2 Gbps，CUBIC 只有 15 Mbps。</p>
+<p class="cite">出處：[BBR 2017, "Congestion-Based Congestion Control", p.58]、[BBR 2017, "Congestion and Bottlenecks", p.58]、[BBR 2017, "Characterizing the Bottleneck", p.60]、[BBR 2017, "Google B4 WAN Deployment Experience", p.64]</p>
+</details>
+</section>

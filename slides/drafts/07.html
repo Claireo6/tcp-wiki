@@ -1,0 +1,10 @@
+<section data-src="wiki/concepts/packet-loss-detection.md">
+<h2>兩種遺失信號，兩種反應</h2>
+<div class="toggle"><button data-mode="timeout" class="on">逾時（Timeout）</button><button data-mode="dupack">3 個重複 ACK</button></div>
+<svg id="cwnd-chart" viewBox="0 0 640 260" role="img" aria-label="cwnd 隨 RTT 變化的模擬圖"></svg>
+<p id="cwnd-caption" class="caption"></p>
+<details><summary>詳細補充：模擬規則</summary>
+<p>本圖依 RFC 5681 計算：slow start 每個 RTT 翻倍、壅塞避免每個 RTT 加 1；遺失時 ssthresh 設為在途量的一半。逾時後 cwnd 降為 1 個區段重新慢啟動；收到 3 個重複 ACK 則重傳並從 ssthresh 繼續（省略 fast recovery 期間短暫的視窗膨脹）。網路容量與遺失時間點是示意。</p>
+<p class="cite">出處：[RFC 5681 §3.1]、[RFC 5681 §3.2]</p>
+</details>
+</section>

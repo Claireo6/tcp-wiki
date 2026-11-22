@@ -1,0 +1,13 @@
+<section data-src="wiki/concepts/rwnd-vs-cwnd.md">
+<h2>兩個視窗：rwnd 與 cwnd</h2>
+<table class="cmp">
+<tr><th></th><th>rwnd 接收視窗</th><th>cwnd 壅塞視窗</th></tr>
+<tr><td>保護誰</td><td>接收端的緩衝區</td><td>網路</td></tr>
+<tr><td>誰決定</td><td>接收端通告</td><td>傳送端自己調整</td></tr>
+</table>
+<p class="key">實際能送的量 = min(cwnd, rwnd)</p>
+<details><summary>詳細補充：名詞說明</summary>
+<p>這份教材的主角是 cwnd。常聽到的「流量控制（Flow Control）vs. 壅塞控制（Congestion Control）」是教學上的慣用說法，原始文獻並沒有用這組名稱比較兩個視窗。</p>
+<p class="cite">出處：[RFC 5681 §2]、[RFC 5681 §3.1]、[Jacobson 1988, §1, p.4]</p>
+</details>
+</section>

@@ -1,0 +1,13 @@
+<section data-src="wiki/concepts/slow-start.md">
+<h2>慢啟動：從小開始、每輪翻倍</h2>
+<ul>
+<li>起點很小：RFC 5681 規定 2～4 個區段</li>
+<li>每收到一個 ACK，cwnd 加 1，所以每個 RTT 翻倍</li>
+<li>cwnd 超過門檻 ssthresh，改用壅塞避免</li>
+</ul>
+<p class="key">名字叫「慢」，其實是指數成長。</p>
+<details><summary>詳細補充：初始值的演進</summary>
+<p>1988 年的設計從 1 個封包開始；RFC 5681 依區段大小允許 2 到 4 個區段；RFC 6928 實驗性地提議 10 個區段（見後面 IW10 那頁）。ssthresh 一開始要設得很大，讓網路狀況決定何時停止翻倍。</p>
+<p class="cite">出處：[Jacobson 1988, §1, p.4]、[RFC 5681 §3.1]</p>
+</details>
+</section>

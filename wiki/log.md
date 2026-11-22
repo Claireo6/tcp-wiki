@@ -4,6 +4,25 @@
 
 ---
 
+## 2026-11-22 - 教學 HTML 簡報製作（接手者：Claude）
+
+依 AGENTS.md §10 的 graph 執行。
+
+- **檢索 wiki + 覆蓋率關卡**：13 頁投影片各對應至少 1 個 wiki 頁，沒有任何一頁需要 wiki 以外的知識 → 通過。大綱寫入 `slides/outline.md`。
+- **人工確認**：使用者確認大綱（13 頁）。
+- **lint 規則修正（寫稿前）**：原本的 `--slides` 數字檢查會掃描整份 HTML（含 CSS 的 px、JS 常數），必定大量誤報。改為：數字只檢查各頁 `<section>` 內讀者看得到的文字；字數上限不計 `<svg>` 圖表標籤；新增「圖表參數」檢查：圖表常數集中在 `chart-params` JSON，每個值都必須在 `parameters.md` 中登錄且附 source。
+- **parameters.md**：新增「簡報引用之情境數字」（32 Kbps、40 bps、7 個演算法、2 Gbps、15 Mbps、133 倍），皆附出處。
+- **逐頁稿**：寫入 `slides/drafts/01.html` 至 `13.html`。作者自我比對 wiki 後修正 2 處：第 13 頁「2009 RFC 5681：四個演算法標準化」與事實不符（RFC 5681 是取代 RFC 2581 的修訂版），改為「現行標準（取代 RFC 2581）」；第 12 頁「不排隊，也不浪費」是自己的說法，改回 wiki 的「吞吐量最高、延遲最低」。
+- **lint --slides**：第 1 輪 PASS（`reports/lint-20261122-210008.md`）。負向測試：加入未登錄數字 400 與超過 100 字的段落，兩者都被抓到（`reports/lint-20261122-210017.md`），還原後 PASS。各頁正文字數 18～86 字。
+- **渲染**：`scripts/build_slides.py` 組合逐頁稿，不修改文字。
+- **渲染檢查（3 輪）**：
+  - **第 1 輪 FAIL**（`reports/render-20261122-210043.md`）：第 7、11 頁內容超出投影片框。原因是圖表依寬度等比放大，高度超過 300px。字數合格，因此**留在渲染節點**以 CSS 限制圖表最大高度修正，未退回逐頁稿。
+  - **第 2 輪 PASS**（`reports/render-20261122-210058.md`），但作者目視截圖發現程式抓不到的問題：第 8 頁狀態轉移圖標籤與方框重疊、第 11 頁 CUBIC 曲線縱軸範圍過大而被壓扁。修正 SVG 座標與縱軸範圍。
+  - **第 3、4 輪 PASS**（`reports/render-20261122-210131.md`、`reports/render-20261122-210148.md`），並微調 CUBIC 標籤位置。截圖存於 `reports/render/`。
+- **待辦**：獨立 AI 審查（依 AGENTS.md §1，須由使用者另開新對話進行，作者不得自我審查）。
+
+---
+
 ## 2026-11-22 - 文獻 6/6 bbr2017（接手者：Claude）
 
 - **步驟 0 來源驗證**：raw/ 中的 BBR 檔案是 Communications of the ACM，February 2017，Vol. 60，No. 2，pp. 58-66（DOI 10.1145/3009824），作者 Cardwell / Cheng / Gunn / Hassas Yeganeh / Jacobson，文章由 queue.acm.org 發展而來。專案原本以「BBR 2016」（ACM Queue 網頁版的年份）規劃，但檔案中沒有出現 2016，無法從 raw/ 驗證，因此**全面改為 BBR 2017**；檔案已由使用者改名為 `raw/bbr2017.pdf` 與 `raw/bbr2017.txt`。這份是正式排版期刊 PDF，頁碼固定，出處格式改為 `BBR 2017` + 小節標題 + 頁碼（原本「網頁另存 PDF 頁碼不可靠」的理由已不成立）。全文搜尋 Tahoe：0 次。

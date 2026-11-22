@@ -1,0 +1,13 @@
+<section data-src="wiki/sources/rfc6928.md">
+<h2>IW10：把起跑點拉高</h2>
+<p class="tag">Experimental，不是正式標準</p>
+<ul>
+<li>初始視窗從 2～4 提高到 10 個區段</li>
+<li>網頁多是短連線，還沒離開慢啟動就結束了</li>
+<li>超過 4 KB 的資料，最多省下 4 個 RTT</li>
+</ul>
+<details><summary>詳細補充：代價與限制</summary>
+<p>Google 的大規模實驗中，平均搜尋延遲改善 11.7%（AvgDC）與 8.7%（SlowDC），重傳率增加 0.3% 與 0.7%。RFC 6928 規定：沒有監控能力的系統不得預設開啟。</p>
+<p class="cite">出處：[RFC 6928 §1]、[RFC 6928 §5.1]、[RFC 6928 §10.1]、[RFC 6928 §10.2]、[RFC 6928 §12]</p>
+</details>
+</section>

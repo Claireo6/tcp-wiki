@@ -1,0 +1,12 @@
+<section data-src="wiki/concepts/congestion-avoidance.md">
+<h2>壅塞避免：加法增、乘法減</h2>
+<ul>
+<li><b>沒事時慢慢加</b>：每個 RTT 約加 1 個區段</li>
+<li><b>出事時大砍</b>：ssthresh 降為在途資料量的一半</li>
+</ul>
+<p>這就是 AIMD。Jacobson 認為減半有充分理由，但每輪加 1 「幾乎肯定太大」。</p>
+<details><summary>詳細補充：為什麼用 FlightSize</summary>
+<p>RFC 5681 的公式是 ssthresh = max(FlightSize / 2, 2*SMSS)。它特別提醒：用 cwnd 取代 FlightSize（已送出但還沒確認的資料量）是常見錯誤。1988 年論文則寫「目前視窗大小的一半」。</p>
+<p class="cite">出處：[RFC 5681 §3.1]、[Jacobson 1988, §B, p.20]、[Jacobson 1988, §D, p.23]</p>
+</details>
+</section>

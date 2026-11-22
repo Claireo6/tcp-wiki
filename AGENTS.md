@@ -165,3 +165,19 @@ tcp-wiki/
    - **狀態轉移圖**：手繪 Inline SVG，展示 Slow Start、Congestion Avoidance、Fast Recovery 轉移條件。
    - **CUBIC 曲線圖**：以 RFC 9438 參數 $C=0.4, \beta=0.7$ 及公式 $W(t) = C(t-K)^3 + W_{max}$ 繪製原生 SVG 曲線。
    - 圖表中使用的每一個常數與規則，皆必須與 `wiki/parameters.md` 記載完全吻合。
+
+---
+
+## 10. 簡報製作 Graph（2026-11-22 實作）
+
+```
+檢索 wiki → 覆蓋率關卡 → 大綱（slides/outline.md）→ 【人工確認】→ 逐頁稿（slides/drafts/NN.html）
+→ lint --slides（字數、數字、data-src、圖表參數）→ 渲染（scripts/build_slides.py）
+→ 渲染檢查（scripts/check_render.py：版面溢出、圖表是否畫出、互動、JS 錯誤、逐頁截圖）
+→ 作者目視檢查截圖 → 獨立 AI 審查（使用者另開新對話）→ 交件
+```
+
+- **逐頁稿節點**：每頁一個檔案，只能使用 `data-src` 指定之 wiki 頁內容；數字必須先登錄於 `wiki/parameters.md`。
+- **渲染節點**：`build_slides.py` 只負責組合與排版，**不得修改逐頁稿任何文字**；圖表常數集中於 `chart-params` JSON 並附出處。
+- **退回路線**：字數或數字錯誤 → 退回逐頁稿；版面溢出但字數合格 → 留在渲染節點修 CSS；圖表內容錯誤 → 退回 `parameters.md` 查證。
+- **渲染檢查**需要 playwright 與 Chrome，不屬於只用標準庫的 `lint.py`。

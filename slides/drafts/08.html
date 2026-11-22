@@ -1,0 +1,9 @@
+<section data-src="wiki/concepts/fast-retransmit-fast-recovery.md">
+<h2>快速重傳與快速恢復</h2>
+<svg id="state-diagram" viewBox="0 0 640 250" role="img" aria-label="TCP 壅塞控制狀態轉移圖"></svg>
+<p>收到重複 ACK，代表後面的封包已經抵達，ACK 時脈還在運作，所以不必退回 slow start。</p>
+<details><summary>詳細補充：fast recovery 的步驟</summary>
+<p>收到第 3 個重複 ACK：重傳遺失的區段，ssthresh 設為在途量的一半，cwnd 設為 ssthresh + 3*SMSS（暫時加上已離開網路的 3 個區段）。之後每多一個重複 ACK，cwnd 再加 1 個 SMSS。收到確認新資料的 ACK 時，cwnd 縮回 ssthresh。</p>
+<p class="cite">出處：[RFC 5681 §3.2]</p>
+</details>
+</section>

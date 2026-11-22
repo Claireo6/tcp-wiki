@@ -9,6 +9,7 @@ scripts/lint.py - TCP 壅塞控制 LLM Wiki 自動化檢驗腳本
 import sys
 import os
 import re
+import json
 import argparse
 from datetime import datetime
 
@@ -460,52 +461,72 @@ def check_slides(reporter):
 
     # 2. 檢查每一頁 section
     sections = re.findall(r'<section\b([^>]*)>(.*?)</section>', content, re.DOTALL | re.IGNORECASE)
+    if not sections:
+        reporter.add_error("簡報章節", "簡報中找不到任何 <section>", file_path=SLIDES_PATH)
+
+    param_path = os.path.join(WIKI_DIR, "parameters.md")
+    valid_numbers = set()
+    if os.path.exists(param_path):
+        with open(param_path, "r", encoding="utf-8") as pf:
+            valid_numbers = set(re.findall(r'\b\d+(?:\.\d+)?\b', pf.read()))
+    rfc_numbers = {"5681", "6582", "6928", "9438", "8312", "3782", "2581", "3390"}
+
+    def check_number(num, where):
+        if len(num) == 4 and (num.startswith("19") or num.startswith("20")):
+            return  # 4 位數年份
+        if num in rfc_numbers:
+            return  # RFC 編號
+        if num not in valid_numbers:
+            reporter.add_error("簡報數字", f"{where}的數值 `{num}` 未在 wiki/parameters.md 中登錄", file_path=SLIDES_PATH)
+
     for idx, (attrs, sec_content) in enumerate(sections, 1):
-        # 檢查 data-src
         data_src_match = re.search(r'data-src=["\']([^"\']+)["\']', attrs)
         if not data_src_match:
             reporter.add_error("簡報章節", f"第 {idx} 個 <section> 缺少 data-src 屬性", file_path=SLIDES_PATH)
         else:
-            target_wiki = os.path.normpath(os.path.join(WORKSPACE_DIR, data_src_match.group(1)))
-            if not os.path.exists(target_wiki):
-                reporter.add_error("簡報章節", f"data-src 指定之 Wiki 頁面不存在: `{data_src_match.group(1)}`", file_path=SLIDES_PATH)
+            for src in data_src_match.group(1).split():
+                target_wiki = os.path.normpath(os.path.join(WORKSPACE_DIR, src))
+                if not os.path.exists(target_wiki):
+                    reporter.add_error("簡報章節", f"第 {idx} 頁 data-src 指定之 Wiki 頁面不存在: `{src}`", file_path=SLIDES_PATH)
 
-        # 3. 字數上限 100 字（排除 <details>...</details> 與 HTML 標籤）
-        filtered_content = re.sub(r'<details\b[^>]*>.*?</details>', '', sec_content, flags=re.DOTALL | re.IGNORECASE)
-        plain_text = re.sub(r'<[^>]+>', '', filtered_content).strip()
-        # 計算中文字數 + 英文字數
+        no_script = re.sub(r'<(script|style)\b[^>]*>.*?</\1>', '', sec_content, flags=re.DOTALL | re.IGNORECASE)
+        # 3. 字數上限 100 字：排除 <details> 補充區塊與 <svg> 圖表標籤
+        body = re.sub(r'<details\b[^>]*>.*?</details>', '', no_script, flags=re.DOTALL | re.IGNORECASE)
+        body = re.sub(r'<svg\b[^>]*>.*?</svg>', '', body, flags=re.DOTALL | re.IGNORECASE)
+        plain_text = re.sub(r'<[^>]+>', ' ', body)
         chinese_chars = len(re.findall(r'[\u4e00-\u9fff]', plain_text))
         english_words = len(re.findall(r'[a-zA-Z0-9_]+', plain_text))
         total_words = chinese_chars + english_words
-
         if total_words > 100:
             reporter.add_error("簡報字數", f"第 {idx} 頁正文字數 ({total_words} 字) 超過 100 字上限", file_path=SLIDES_PATH)
 
-    # 4. 數字查核：簡報出現的所有數字均必須在 wiki/parameters.md 存在
-    # 排除：4 位數年份、RFC 編號、出處標籤內數字
-    param_path = os.path.join(WIKI_DIR, "parameters.md")
-    if os.path.exists(param_path):
-        with open(param_path, "r", encoding="utf-8") as pf:
-            param_content = pf.read()
-        valid_numbers = set(re.findall(r'\b\d+(?:\.\d+)?\b', param_content))
+        # 4. 數字查核：讀者看得到的文字（含圖表標籤，不含 <details> 與出處標籤），HTML 屬性中的數字不算
+        visible = re.sub(r'<details\b[^>]*>.*?</details>', '', no_script, flags=re.DOTALL | re.IGNORECASE)
+        visible = re.sub(r'<[^>]+>', ' ', visible)
+        visible = ANY_CITATION_REGEX.sub('', visible)
+        for num in re.findall(r'(?<![\w.])\d+(?:\.\d+)?(?![\w.])', visible):
+            check_number(num, f"第 {idx} 頁")
 
-        # 移除出處標籤
-        clean_slides = ANY_CITATION_REGEX.sub('', content)
-        # 移除 <details>
-        clean_slides = re.sub(r'<details\b[^>]*>.*?</details>', '', clean_slides, flags=re.DOTALL | re.IGNORECASE)
-        # 找出所有數字
-        all_numbers = re.findall(r'\b\d+(?:\.\d+)?\b', clean_slides)
-        
-        rfc_numbers = {"5681", "6582", "6928", "9438", "8312"}
-        for num in all_numbers:
-            # 排除 4 位數年份 (1900-2099)
-            if len(num) == 4 and (num.startswith("19") or num.startswith("20")):
-                continue
-            # 排除 RFC 編號
-            if num in rfc_numbers:
-                continue
-            if num not in valid_numbers:
-                reporter.add_error("簡報數字", f"簡報中的數值 `{num}` 未在 wiki/parameters.md 中登錄", file_path=SLIDES_PATH)
+    # 5. 圖表參數：<script id="chart-params" type="application/json"> 內的每個數值都必須在 parameters.md 中登錄
+    m = re.search(r'<script[^>]*id=["\']chart-params["\'][^>]*>(.*?)</script>', content, re.DOTALL | re.IGNORECASE)
+    if m:
+        try:
+            params = json.loads(m.group(1))
+        except ValueError as e:
+            reporter.add_error("圖表參數", f"chart-params 不是合法 JSON：{e}", file_path=SLIDES_PATH)
+            params = {}
+        for key, val in params.items():
+            if isinstance(val, dict):
+                v, src = val.get("value"), val.get("source", "")
+                if not src:
+                    reporter.add_error("圖表參數", f"圖表參數 `{key}` 缺少 source 出處", file_path=SLIDES_PATH)
+            else:
+                v = val
+            if isinstance(v, (int, float)):
+                num = ("%g" % v)
+                check_number(num, f"圖表參數 `{key}` ")
+    elif "<svg" in content or "<canvas" in content:
+        reporter.add_error("圖表參數", "簡報含有圖表，但找不到 <script id=\"chart-params\"> 參數區塊", file_path=SLIDES_PATH)
 
 
 def main():
